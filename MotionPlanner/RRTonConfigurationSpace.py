@@ -12,7 +12,7 @@ SNAKE_WIDTH = 4.0
 INFLATION_RADIUS = int(SNAKE_WIDTH / 2.0 + 1.0)
 
 # Constraints
-JOINT_LIMIT = 70.0      # Relaxed limit to allow natural movement
+JOINT_LIMIT = 50.0      # Relaxed limit to allow natural movement
 MAX_TURN_ANGLE = np.deg2rad(70) 
 
 RRT_STEP_SIZE = 3.0     
@@ -214,6 +214,33 @@ class CSpaceRRT:
             prev_abs_angle = curr_abs_angle
             
         return np.array([x, y, *joints])
+    
+    # CSpaceRRT sınıfının içine eklenecek:
+    def is_goal_reached(self, current_state, goal_state):
+        """
+        Hem konuma hem de eklem açılarına bakarak 'yeterince yakın mı' kontrolü yapar.
+        """
+        # 1. KONUM HATASI (Head Position Error)
+        pos_error = math.hypot(current_state[0] - goal_state[0], 
+                               current_state[1] - goal_state[1])
+        
+        # 2. ŞEKİL/AÇI HATASI (Shape/Joint Error)
+        # State vektörünün 2. indeksinden sonrası açılardır (j1...j4)
+        current_joints = current_state[2:]
+        goal_joints = goal_state[2:]
+        
+        # Açılar arasındaki farkın büyüklüğü (L2 Norm)
+        angle_error = np.linalg.norm(current_joints - goal_joints)
+        
+        # --- AYARLANABİLİR EŞİK DEĞERLERİ ---
+        POS_TOLERANCE = 4.0      # Hedefe 4 birim yaklaşmak (Eski ayarınız)
+        ANGLE_TOLERANCE = 30.0   # Toplamda 30 derece sapmaya izin ver
+        
+        # İki koşul da sağlanıyorsa TRUE döner
+        if pos_error <= POS_TOLERANCE and angle_error <= ANGLE_TOLERANCE:
+            return True, pos_error, angle_error
+        
+        return False, pos_error, angle_error
 
     def step(self):
         if self.finished: return False
@@ -256,10 +283,19 @@ class CSpaceRRT:
         # Collision Check
         if self.is_valid_configuration(new_node):
             self.nodes.append(new_node)
-            
+            '''
             dist_to_goal = math.hypot(new_node.state[0]-self.goal_conf[0], new_node.state[1]-self.goal_conf[1])
             if dist_to_goal <= 4.0: 
                 print(f"Goal Reached! Final Dist: {dist_to_goal:.2f}")
+                self.finished = True
+                self.path = self.extract_path(new_node)
+                return True
+            '''
+            # --- YENİ KOD (EKLENECEK) ---
+            reached, p_err, a_err = self.is_goal_reached(new_node.state, self.goal_conf)
+            
+            if reached:
+                print(f"Goal Reached! Pos Error: {p_err:.2f}, Angle Error: {a_err:.2f}")
                 self.finished = True
                 self.path = self.extract_path(new_node)
                 return True
