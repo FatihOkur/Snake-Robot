@@ -54,6 +54,102 @@ def normalize_angle(angle):
     while angle < -math.pi: angle += 2 * math.pi
     return angle
 
+def line_segment_intersection(p1, p2, p3, p4):
+    """
+    Check if line segment (p1, p2) intersects with line segment (p3, p4).
+    Returns True if segments intersect (excluding endpoints touching).
+    """
+    x1, y1 = p1
+    x2, y2 = p2
+    x3, y3 = p3
+    x4, y4 = p4
+    
+    dx1 = x2 - x1
+    dy1 = y2 - y1
+    dx2 = x4 - x3
+    dy2 = y4 - y3
+    
+    det = dx1 * dy2 - dy1 * dx2
+    
+    if abs(det) < 1e-10:
+        return False
+    
+    t = ((x3 - x1) * dy2 - (y3 - y1) * dx2) / det
+    u = ((x3 - x1) * dy1 - (y3 - y1) * dx1) / det
+    
+    epsilon = 0.01
+    if (epsilon < t < 1.0 - epsilon) and (epsilon < u < 1.0 - epsilon):
+        return True
+    
+    return False
+
+def point_to_segment_distance(point, seg_start, seg_end):
+    """Calculate minimum distance from point to line segment."""
+    px, py = point
+    sx, sy = seg_start
+    ex, ey = seg_end
+    
+    dx = ex - sx
+    dy = ey - sy
+    
+    if dx == 0 and dy == 0:
+        return math.hypot(px - sx, py - sy)
+    
+    t = ((px - sx) * dx + (py - sy) * dy) / (dx * dx + dy * dy)
+    t = max(0, min(1, t))
+    
+    closest_x = sx + t * dx
+    closest_y = sy + t * dy
+    
+    return math.hypot(px - closest_x, py - closest_y)
+
+def segment_to_segment_distance(p1, p2, p3, p4):
+    """Calculate minimum distance between two line segments."""
+    distances = [
+        point_to_segment_distance(p1, p3, p4),
+        point_to_segment_distance(p2, p3, p4),
+        point_to_segment_distance(p3, p1, p2),
+        point_to_segment_distance(p4, p1, p2),
+    ]
+    return min(distances)
+
+def check_self_collision(body_points, min_distance=2.0):
+    """
+    Check if snake body collides with itself.
+    
+    Args:
+        body_points: List of (x, y) tuples representing body positions
+        min_distance: Minimum allowed distance between non-adjacent segments
+    
+    Returns:
+        True if self-collision detected, False otherwise
+    """
+    n = len(body_points)
+    
+    # Check all pairs of segments (skip adjacent segments)
+    for i in range(n - 1):
+        seg1_start = body_points[i]
+        seg1_end = body_points[i + 1]
+        
+        # Only check against segments at least 2 segments away
+        for j in range(i + 2, n - 1):
+            seg2_start = body_points[j]
+            seg2_end = body_points[j + 1]
+            
+            # Check intersection
+            if line_segment_intersection(seg1_start, seg1_end, seg2_start, seg2_end):
+                return True
+            
+            # Check minimum distance
+            if min_distance > 0:
+                dist = segment_to_segment_distance(
+                    seg1_start, seg1_end, seg2_start, seg2_end
+                )
+                if dist < min_distance:
+                    return True
+    
+    return False
+
 def get_snake_body(state, yaw_override=None):
     """
     CORRECTED Forward kinematics: 5 segments, 4 joints
@@ -338,18 +434,30 @@ class ConfigurationSpaceRRT:
         return False, pos_error, angle_error
 
     def is_valid_configuration(self, node):
-        """Check if configuration is collision-free"""
+        """
+        Check if configuration is collision-free.
+        
+        Now includes:
+        1. Boundary check
+        2. Environment collision check
+        3. Self-collision check (NEW!)
+        """
         body = get_snake_body(node.state, yaw_override=node.yaw)
         
-        # Check bounds
+        # 1. Check bounds
         for (bx, by) in body:
             if not (0 <= bx < self.env.width and 0 <= by < self.env.height):
                 return False
         
-        # Check segments
+        # 2. Check environment collision (walls, obstacles)
         for i in range(len(body)-1):
             if self.env.check_line_collision(body[i], body[i+1]):
                 return False
+        
+        # 3. Check self-collision (NEW!)
+        min_clearance = SNAKE_WIDTH / 2.0  # Half width as minimum distance
+        if check_self_collision(body, min_distance=min_clearance):
+            return False
         
         return True
 
