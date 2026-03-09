@@ -5,66 +5,72 @@ from environment import line_segment_intersection
 
 class SnakeRobotModel:
     @staticmethod
-    def get_body_from_tail_state(state):
+    def get_body_from_tail_base(state):
         """
-        Reconstructs the body starting from the TAIL (Root).
+        Reconstructs the full 5-segment body starting from Joint 4 (Base).
         
-        State Vector (7D): [x_tail, y_tail, theta_tail, q1, q2, q3, q4]
+        State Vector (7D): [x_j4, y_j4, yaw_link4, q1, q2, q3, q4]
         
-        Kinematic Chain (Strict Hierarchy):
-        [Tail/Link4] --(J4)-- [Link3] --(J3)-- [Link2] --(J2)-- [Link1] --(J1)-- [Head]
+        Robot Chain:
+        [Head] --(q1)-- [Link1] --(q2)-- [Link2] --(q3)-- [Link3] --(q4)-- [Link4/Tail]
         
-        Constraints:
-        - Tail is the Base.
-        - theta_tail determines the orientation of the Tail segment.
-        - Joints (q) add to the angle of the NEXT segment in the chain.
+        Logic:
+        1. We are given J4 position and Link4 (Tail) orientation.
+        2. Calculate Tail_End by moving backwards from J4 along Link4.
+        3. Calculate J3 by moving FORWARD from J4 (but we need Link3 angle).
+           Link3 Angle = Link4 Angle + q4
+        4. Continue up the chain to Head.
+        
+        Returns:
+            List of points in STANDARD order: [Head_Start, Head_End, J2, J3, J4, Tail_End]
         """
-        x_tail, y_tail, th_tail = state[0], state[1], state[2]
+        x_j4, y_j4, yaw_tail = state[0], state[1], state[2]
         joint_angles = state[3:] # [q1, q2, q3, q4]
         
         L = config.SEGMENT_LENGTH
         
-        # 1. Define Tail Segment Geometry
-        # We assume (x_tail, y_tail) is the FRONT (Joint 4 location) of the Tail segment.
-        # The "End" of the tail is behind it.
-        tail_end_x = x_tail - L * math.cos(th_tail)
-        tail_end_y = y_tail - L * math.sin(th_tail)
+        # 1. Calculate Tail End (Back of the robot)
+        # J4 is the front of Link 4. Tail_End is L units behind along yaw_tail.
+        tail_end_x = x_j4 - L * math.cos(yaw_tail)
+        tail_end_y = y_j4 - L * math.sin(yaw_tail)
         
-        # Point 0: Tail End, Point 1: Tail Front (J4)
-        chain_points = [(tail_end_x, tail_end_y), (x_tail, y_tail)]
+        # Points list. We will build it: [Tail_End, J4, J3, J2, J1, Head_Start]
+        # Then reverse it to match standard visualization order.
+        chain_points = [(tail_end_x, tail_end_y), (x_j4, y_j4)]
         
-        current_x, current_y = x_tail, y_tail
-        current_yaw = th_tail
+        current_x, current_y = x_j4, y_j4
+        current_yaw = yaw_tail
         
-        # 2. Propagate Forward towards Head
-        # Order: Tail(J4) -> Link3(J3) -> Link2(J2) -> Link1(J1) -> Head
-        # Joint Indices: q4 (index 3), q3 (index 2), q2 (index 1), q1 (index 0)
-        ordered_joints = [joint_angles[3], joint_angles[2], joint_angles[1], joint_angles[0]]
+        # 2. Walk up the chain (Link 4 -> Link 3 -> ... -> Head)
+        # Order of angles reversed for walking up: q4 -> q3 -> q2 -> q1
+        # Indices in joint_angles: 3, 2, 1, 0
+        indices = [3, 2, 1, 0] 
         
-        for q in ordered_joints:
-            # The joint angle rotates the NEXT segment relative to the CURRENT one.
-            # Next_Yaw = Current_Yaw + q
-            next_yaw = current_yaw + math.radians(q)
+        for i in indices:
+            # Angle of next segment = Current Angle + Joint Angle
+            # Note: Joint definition is usually relative deviation.
+            # Assuming +angle means turn left.
+            current_yaw += math.radians(joint_angles[i])
             
-            # Calculate end of this new segment
-            next_x = current_x + L * math.cos(next_yaw)
-            next_y = current_y + L * math.sin(next_yaw)
+            # Calculate end of this segment
+            next_x = current_x + L * math.cos(current_yaw)
+            next_y = current_y + L * math.sin(current_yaw)
             
             chain_points.append((next_x, next_y))
             
-            # Update for next link
+            # Update current for next iteration
             current_x, current_y = next_x, next_y
-            current_yaw = next_yaw
             
-        # chain_points is [Tail_End, J4, J3, J2, J1, Head_Tip]
-        # Reverse it so index 0 is Head (standard for visualization)
+        # chain_points is now: [Tail_End, J4, J3, J2, J1(Head_End), Head_Start]
+        # Standard visualization expects: [Head_Start, Head_End, J2, J3, J4, Tail_End]
         return list(reversed(chain_points))
 
     @staticmethod
     def check_self_collision(body_points):
+        """Checks if non-adjacent segments intersect."""
         n = len(body_points)
-        for i in range(n - 2):
-            for j in range(i + 2, n - 1):
+        for i in range(n - 2): # Segment i
+            for j in range(i + 2, n - 1): # Segment j
                 if line_segment_intersection(body_points[i], body_points[i+1], 
                                              body_points[j], body_points[j+1]):
                     return True
@@ -77,7 +83,7 @@ class SnakeRobotModel:
             return False
 
         # 2. Reconstruct Body
-        body = SnakeRobotModel.get_body_from_tail_state(state)
+        body = SnakeRobotModel.get_body_from_tail_base(state)
         
         # 3. Check Map Boundaries
         for x, y in body:
