@@ -84,14 +84,18 @@ class TailBaseRRT:
 
             new_state = from_state.copy()
 
-            # 2. Optimized Joint Stepping
-            # PULL FRONT JOINTS (q1, q2, q3) TOWARDS ZERO
-            # This prevents the head from wildly swinging into walls. 
-            # Multiplying by 0.7 aggressively straightens the body as it drives.
-            for i in range(3, 6):
-                new_state[i] = new_state[i] * 0.7 
+            # 2. Full Body Joint Stepping
+            # Steer the front joints (q1, q2, q3) towards the randomly sampled RRT targets.
+            # This allows the robot to utilize its full degrees of freedom to snake around obstacles.
+            SAFE_JOINT_STEP = 5.0 # Max degrees a joint can swing per step
+            joint_diff = to_state[3:6] - from_state[3:6]
+            max_j_front = np.max(np.abs(joint_diff))
+            
+            if max_j_front > 1e-6:
+                scale_front = min(1.0, SAFE_JOINT_STEP / max_j_front)
+                new_state[3:6] += joint_diff * scale_front
 
-            # Steer q4 towards the ideal calculated trajectory
+            # Steer q4 (the tail joint) towards the ideal spatial trajectory required to hit the target (x, y)
             q4_diff = q4_ideal_deg - from_state[6]
             if abs(q4_diff) > 1e-6:
                 scale_q4 = min(1.0, 10.0 / abs(q4_diff)) 

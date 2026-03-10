@@ -15,8 +15,8 @@ MAX_TURN_ANGLE = np.deg2rad(30) # Max rotation for base per step
 
 # --- RRT SETTINGS ---
 MAX_ITER = 200000
-GOAL_POS_TOLERANCE = 2.0    # Units (checked at HEAD)
-GOAL_ANGLE_TOLERANCE = 15.0 # Degrees (checked at JOINTS)
+GOAL_POS_TOLERANCE = 1.0    # Units (checked at HEAD)
+GOAL_ANGLE_TOLERANCE = 5.0 # Degrees (checked at JOINTS)
 
 # --- KD-TREE WEIGHTS ---
 # State: [x_base, y_base, yaw_base, q1, q2, q3, q4]
