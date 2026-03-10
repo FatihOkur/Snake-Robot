@@ -13,25 +13,24 @@ class DebrisMap:
         self.inflate_obstacles(radius=config.INFLATION_RADIUS)
 
     def create_chaos_field(self):
-        # Borders
-        self.raw_grid[0, :] = 1
-        self.raw_grid[-1, :] = 1
-        self.raw_grid[:, 0] = 1
-        self.raw_grid[:, -1] = 1
-        
-        # Bottom wall with right gap
-        self.raw_grid[30:33, 0:45] = 1
-        
-        # Top wall with left gap
-        self.raw_grid[50:53, 35:70] = 1
+        # 1. Fill the entire map with impassable debris
+        self.raw_grid[:, :] = 1
 
-        # Pillars
-        self.raw_grid[15:25, 55:60] = 1
-        self.raw_grid[40:44, 20:25] = 1
+        # 2. Carve a 12-unit wide winding spiral maze
+        # Path 1: Vertical Start (Bottom-Left)
+        self.raw_grid[2:30, 10:22] = 0
         
-        # Clear start and goal areas
-        self.raw_grid[15:25, 30:40] = 0
-        self.raw_grid[55:65, 55:65] = 0
+        # Path 2: Sharp 90-deg Turn Right (Horizontal East)
+        self.raw_grid[18:30, 10:50] = 0
+        
+        # Path 3: Sharp 90-deg Turn Left (Vertical North)
+        self.raw_grid[18:50, 38:50] = 0
+        
+        # Path 4: Sharp 90-deg Turn Left (Horizontal West)
+        self.raw_grid[38:50, 20:50] = 0
+        
+        # Path 5: Sharp 90-deg Turn Right to Goal (Vertical North)
+        self.raw_grid[38:68, 20:32] = 0
         
     def inflate_obstacles(self, radius):
         structure = np.ones((radius*2, radius*2))
