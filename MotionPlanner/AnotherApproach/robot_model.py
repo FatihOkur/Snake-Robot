@@ -7,44 +7,44 @@ class SnakeRobotModel:
     @staticmethod
     def get_body_from_tail_base(state):
         """
-        Reconstructs the full 5-segment body starting from Joint 4 (Base).
+        Reconstructs the full 4-segment body starting from Joint 3 (Base).
         
-        State Vector (7D): [x_j4, y_j4, yaw_link4, q1, q2, q3, q4]
+        State Vector (6D): [x_j3, y_j3, yaw_link3, q1, q2, q3]
         
         Robot Chain:
-        [Head] --(q1)-- [Link1] --(q2)-- [Link2] --(q3)-- [Link3] --(q4)-- [Link4/Tail]
+        [Head] --(q1)-- [Link1] --(q2)-- [Link2] --(q3)-- [Link3/Tail]
         
         Logic:
-        1. We are given J4 position and Link4 (Tail) orientation.
-        2. Calculate Tail_End by moving backwards from J4 along Link4.
-        3. Calculate J3 by moving FORWARD from J4 (but we need Link3 angle).
-           Link3 Angle = Link4 Angle + q4
+        1. We are given J3 position and Link3 (Tail) orientation.
+        2. Calculate Tail_End by moving backwards from J3 along Link3.
+        3. Calculate J2 by moving FORWARD from J3 (but we need Link2 angle).
+           Link2 Angle = Link3 Angle + q3
         4. Continue up the chain to Head.
         
         Returns:
-            List of points in STANDARD order: [Head_Start, Head_End, J2, J3, J4, Tail_End]
+            List of points in STANDARD order: [Head_Start, Head_End, J2, J3, Tail_End]
         """
-        x_j4, y_j4, yaw_tail = state[0], state[1], state[2]
-        joint_angles = state[3:] # [q1, q2, q3, q4]
+        x_j3, y_j3, yaw_tail = state[0], state[1], state[2]
+        joint_angles = state[3:] # [q1, q2, q3]
         
         L = config.SEGMENT_LENGTH
         
         # 1. Calculate Tail End (Back of the robot)
-        # J4 is the front of Link 4. Tail_End is L units behind along yaw_tail.
-        tail_end_x = x_j4 - L * math.cos(yaw_tail)
-        tail_end_y = y_j4 - L * math.sin(yaw_tail)
+        # J3 is the front of Link 3. Tail_End is L units behind along yaw_tail.
+        tail_end_x = x_j3 - L * math.cos(yaw_tail)
+        tail_end_y = y_j3 - L * math.sin(yaw_tail)
         
-        # Points list. We will build it: [Tail_End, J4, J3, J2, J1, Head_Start]
+        # Points list. We will build it: [Tail_End, J3, J2, J1, Head_Start]
         # Then reverse it to match standard visualization order.
-        chain_points = [(tail_end_x, tail_end_y), (x_j4, y_j4)]
+        chain_points = [(tail_end_x, tail_end_y), (x_j3, y_j3)]
         
-        current_x, current_y = x_j4, y_j4
+        current_x, current_y = x_j3, y_j3
         current_yaw = yaw_tail
         
-        # 2. Walk up the chain (Link 4 -> Link 3 -> ... -> Head)
-        # Order of angles reversed for walking up: q4 -> q3 -> q2 -> q1
-        # Indices in joint_angles: 3, 2, 1, 0
-        indices = [3, 2, 1, 0] 
+        # 2. Walk up the chain (Link 3 -> Link 2 -> ... -> Head)
+        # Order of angles reversed for walking up: q3 -> q2 -> q1
+        # Indices in joint_angles: 2, 1, 0
+        indices = [2, 1, 0] 
         
         for i in indices:
             # Angle of next segment = Current Angle + Joint Angle
@@ -61,8 +61,8 @@ class SnakeRobotModel:
             # Update current for next iteration
             current_x, current_y = next_x, next_y
             
-        # chain_points is now: [Tail_End, J4, J3, J2, J1(Head_End), Head_Start]
-        # Standard visualization expects: [Head_Start, Head_End, J2, J3, J4, Tail_End]
+        # chain_points is now: [Tail_End, J3, J2, J1(Head_End), Head_Start]
+        # Standard visualization expects: [Head_Start, Head_End, J2, J3, Tail_End]
         return list(reversed(chain_points))
 
     @staticmethod

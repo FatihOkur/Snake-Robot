@@ -78,27 +78,27 @@ class TailBaseRRT:
         curvature = max(-max_curv, min(max_curv, curvature))
 
         L = config.SEGMENT_LENGTH
-        sin_q4_ideal = (curvature * L) / direction
-        sin_q4_ideal = max(-0.999, min(0.999, sin_q4_ideal))
-        q4_ideal_deg = math.degrees(math.asin(sin_q4_ideal))
+        sin_q3_ideal = (curvature * L) / direction
+        sin_q3_ideal = max(-0.999, min(0.999, sin_q3_ideal))
+        q3_ideal_deg = math.degrees(math.asin(sin_q3_ideal))
 
         new_state = from_state.copy()
 
         # 2. Full Body Joint Stepping
-        # Steer the front joints (q1, q2, q3) towards the randomly sampled RRT targets.
+        # Steer the front joints (q1, q2) towards the randomly sampled RRT targets.
         SAFE_JOINT_STEP = 5.0 # Max degrees a joint can swing per step
-        joint_diff = to_state[3:6] - from_state[3:6]
+        joint_diff = to_state[3:5] - from_state[3:5]
         max_j_front = np.max(np.abs(joint_diff))
         
         if max_j_front > 1e-6:
             scale_front = min(1.0, SAFE_JOINT_STEP / max_j_front)
-            new_state[3:6] += joint_diff * scale_front
+            new_state[3:5] += joint_diff * scale_front
 
-        # Steer q4 (the tail joint) towards the ideal spatial trajectory
-        q4_diff = q4_ideal_deg - from_state[6]
-        if abs(q4_diff) > 1e-6:
-            scale_q4 = min(1.0, 10.0 / abs(q4_diff)) 
-            new_state[6] += q4_diff * scale_q4
+        # Steer q3 (the tail joint) towards the ideal spatial trajectory
+        q3_diff = q3_ideal_deg - from_state[5]
+        if abs(q3_diff) > 1e-6:
+            scale_q3 = min(1.0, 10.0 / abs(q3_diff)) 
+            new_state[5] += q3_diff * scale_q3
 
         new_state[3:] = np.clip(new_state[3:], -config.JOINT_LIMIT, config.JOINT_LIMIT)
 
@@ -107,8 +107,8 @@ class TailBaseRRT:
         if step_len < 0.01: 
             step_len = config.RRT_STEP_SIZE
 
-        q4_new_rad = math.radians(new_state[6])
-        yaw_change = direction * (step_len / L) * math.sin(q4_new_rad)
+        q3_new_rad = math.radians(new_state[5])
+        yaw_change = direction * (step_len / L) * math.sin(q3_new_rad)
 
         new_state[0] += direction * step_len * math.cos(theta + yaw_change / 2.0)
         new_state[1] += direction * step_len * math.sin(theta + yaw_change / 2.0)
@@ -137,12 +137,11 @@ class TailBaseRRT:
             
             joint_diff = np.max(np.abs(state[3:] - self.goal_state[3:]))
             
-            # Relaxed stopping condition. Millimeter perfection is physically 
-            # unnecessary and causes endless wiggling. 
-            if dist < 0.5 and joint_diff < 3.0:
+            # 1. Tighter stopping condition (0.15 units)
+            if dist < 0.15 and joint_diff < 1.5:
                 break
                 
-            # 1. Determine local coordinates
+            # Determine local coordinates
             theta = state[2]
             local_x = dx * math.cos(-theta) - dy * math.sin(-theta)
             local_y = dx * math.sin(-theta) + dy * math.cos(-theta)
@@ -151,43 +150,43 @@ class TailBaseRRT:
                 locked_direction = 1.0 if local_x >= 0 else -1.0
             direction = locked_direction
             
-            # --- FIX 1: Prevent Curvature Explosion ---
-            # If we are very close to the goal, pure pursuit math explodes.
-            # We enter "Terminal Approach": stop curving, just straighten out and coast.
-            if dist < 1.5:
-                q4_ideal_deg = self.goal_state[6] # Aim for final joint state (0)
-                step_len = min(0.5, dist)         # Creep forward gently
+            # Clamp the denominator so we never divide by zero
+            dist_sq = max(dist * dist, 0.01)
+            
+            # Only flatten out when EXTREMELY close (0.3 units)
+            if dist < 0.3:
+                q3_ideal_deg = self.goal_state[5] # Aim for final joint state
+                step_len = min(0.2, dist)         # Creep forward gently
             else:
                 # Normal pure pursuit curvature
-                curvature = 2.0 * local_y / (dist * dist)
+                curvature = 2.0 * local_y / dist_sq
                 max_curv = math.sin(math.radians(config.JOINT_LIMIT)) / config.SEGMENT_LENGTH
                 curvature = max(-max_curv, min(max_curv, curvature))
                 
                 L = config.SEGMENT_LENGTH
-                sin_q4 = (curvature * L) / direction
-                sin_q4 = max(-0.999, min(0.999, sin_q4))
-                q4_ideal_deg = math.degrees(math.asin(sin_q4))
+                sin_q3 = (curvature * L) / direction
+                sin_q3 = max(-0.999, min(0.999, sin_q3))
+                q3_ideal_deg = math.degrees(math.asin(sin_q3))
                 
-                step_len = min(config.RRT_STEP_SIZE, dist) 
+                # Smoothly decelerate as we get closer to prevent overshooting
+                step_len = min(config.RRT_STEP_SIZE, max(0.2, dist * 0.5))
                 
             new_state = state.copy()
             
-            # --- FIX 2: Smooth Proportional Joint Straightening ---
-            # Instead of snapping at maximum speed, multiply the error by a fraction (0.4)
-            # This makes the joints smoothly "ease" into the straight position without jittering.
-            joint_error_front = self.goal_state[3:6] - state[3:6]
-            for i in range(3):
+            # Smooth Proportional Joint Straightening for front joints (q1, q2)
+            joint_error_front = self.goal_state[3:5] - state[3:5]
+            for i in range(2):
                 new_state[3+i] += joint_error_front[i] * 0.4 
                     
-            # Smooth steering for the tail joint
-            q4_error = q4_ideal_deg - state[6]
-            new_state[6] += q4_error * 0.5 
+            # Smooth steering for the tail joint (q3)
+            q3_error = q3_ideal_deg - state[5]
+            new_state[5] += q3_error * 0.5 
                 
             new_state[3:] = np.clip(new_state[3:], -config.JOINT_LIMIT, config.JOINT_LIMIT)
             
-            # 3. Step Base
-            q4_new_rad = math.radians(new_state[6])
-            yaw_change = direction * (step_len / config.SEGMENT_LENGTH) * math.sin(q4_new_rad)
+            # Step Base
+            q3_new_rad = math.radians(new_state[5])
+            yaw_change = direction * (step_len / config.SEGMENT_LENGTH) * math.sin(q3_new_rad)
             
             new_state[0] += direction * step_len * math.cos(theta + yaw_change / 2.0)
             new_state[1] += direction * step_len * math.sin(theta + yaw_change / 2.0)

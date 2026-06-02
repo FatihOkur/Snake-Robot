@@ -10,10 +10,10 @@ import config
 
 def calculate_straight_state_from_head(head_x, head_y, yaw_deg):
     yaw_rad = np.deg2rad(yaw_deg)
-    dist_to_j4 = 12.0
-    j4_x = head_x - dist_to_j4 * math.cos(yaw_rad)
-    j4_y = head_y - dist_to_j4 * math.sin(yaw_rad)
-    return np.array([j4_x, j4_y, yaw_rad, 0, 0, 0, 0])
+    dist_to_j3= 9.0
+    j3_x = head_x - dist_to_j3 * math.cos(yaw_rad)
+    j3_y = head_y - dist_to_j3 * math.sin(yaw_rad)
+    return np.array([j3_x, j3_y, yaw_rad, 0, 0, 0])
 
 def interpolate_arc_path(path_data, steps_per_node=10):
     """
