@@ -16,21 +16,21 @@ class DebrisMap:
         # 1. Fill the entire map with impassable debris
         self.raw_grid[:, :] = 1
 
-        # 2. Carve a 12-unit wide winding spiral maze
+        # 2. Carve an incredibly tight 10-unit wide winding spiral maze
         # Path 1: Vertical Start (Bottom-Left)
-        self.raw_grid[2:30, 10:22] = 0
+        self.raw_grid[2:30, 10:20] = 0
         
         # Path 2: Sharp 90-deg Turn Right (Horizontal East)
-        self.raw_grid[18:30, 10:50] = 0
+        self.raw_grid[20:30, 10:50] = 0
         
         # Path 3: Sharp 90-deg Turn Left (Vertical North)
-        self.raw_grid[18:50, 38:50] = 0
+        self.raw_grid[20:50, 40:50] = 0
         
         # Path 4: Sharp 90-deg Turn Left (Horizontal West)
-        self.raw_grid[38:50, 20:50] = 0
+        self.raw_grid[40:50, 20:50] = 0
         
         # Path 5: Sharp 90-deg Turn Right to Goal (Vertical North)
-        self.raw_grid[38:68, 20:32] = 0
+        self.raw_grid[40:68, 20:30] = 0
         
     def inflate_obstacles(self, radius):
         structure = np.ones((radius*2, radius*2))
