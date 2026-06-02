@@ -8,9 +8,9 @@ SNAKE_WIDTH = 4.0
 INFLATION_RADIUS = int(SNAKE_WIDTH / 2.0 + 1.0)
 
 # --- CONSTRAINTS ---
-JOINT_LIMIT = 70.0          # Degrees (+/-)
+JOINT_LIMIT = 37.0          # Degrees (+/-)
 MAX_JOINT_CHANGE = 15.0     # Degrees per step
-RRT_STEP_SIZE = 1.5        # Max euclidean step for base
+RRT_STEP_SIZE = 2.0         # Max euclidean step for base (was 1.5)
 MAX_TURN_ANGLE = np.deg2rad(25) # Max rotation for base per step
 
 # --- RRT SETTINGS ---

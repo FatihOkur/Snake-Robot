@@ -85,9 +85,11 @@ class TailBaseRRT:
         new_state = from_state.copy()
 
         # 2. Full Body Joint Stepping
-        # Steer the front joints (q1, q2) towards the randomly sampled RRT targets.
+        # Blend front joint targets 30% toward goal for faster convergence.
         SAFE_JOINT_STEP = 5.0 # Max degrees a joint can swing per step
-        joint_diff = to_state[3:5] - from_state[3:5]
+        GOAL_JOINT_BLEND = 0.3
+        joint_target = (1.0 - GOAL_JOINT_BLEND) * to_state[3:5] + GOAL_JOINT_BLEND * self.goal_state[3:5]
+        joint_diff = joint_target - from_state[3:5]
         max_j_front = np.max(np.abs(joint_diff))
         
         if max_j_front > 1e-6:
@@ -201,7 +203,7 @@ class TailBaseRRT:
             
             # Collision Check
             if not SnakeRobotModel.is_valid_state(new_state, self.env):
-                print("   ⚠️ Docking trajectory blocked! Returning to RRT...")
+                print("   [WARN] Docking trajectory blocked! Returning to RRT...")
                 return None 
             
             new_node = Node(new_state, current_node)
@@ -228,7 +230,7 @@ class TailBaseRRT:
             new_node.direction = direction_used
             self.nodes.append(new_node)
             
-            if len(self.nodes) % 100 == 0:
+            if len(self.nodes) % 50 == 0:
                 self.rebuild_kdtree()
             
             # --- GOAL CHECKING & HANDOFF ---
@@ -236,8 +238,8 @@ class TailBaseRRT:
             yaw_diff = abs(self.normalize_angle(new_state[2] - self.goal_state[2]))
             
             if d_pos < config.GOAL_POS_TOLERANCE and yaw_diff < np.deg2rad(config.GOAL_ANGLE_TOLERANCE):
-                print(f"🎯 RRT reached tolerance boundary! Nodes: {len(self.nodes)}")
-                print("🛬 Initiating Local Controller Docking Phase...")
+                print(f"[TARGET] RRT reached tolerance boundary! Nodes: {len(self.nodes)}")
+                print("[DOCK] Initiating Local Controller Docking Phase...")
                 
                 # Try to dock
                 final_node = self.run_local_controller(new_node)
@@ -246,7 +248,7 @@ class TailBaseRRT:
                 if final_node is not None:
                     self.finished = True
                     self.path = self.get_path(final_node)
-                    print("✅ Docking Complete! Path Generated.")
+                    print("[OK] Docking Complete! Path Generated.")
                     return True
                 # If it fails, the RRT loop just continues naturally to find a better angle.
                 

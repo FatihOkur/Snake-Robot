@@ -15,14 +15,16 @@ def calculate_straight_state_from_head(head_x, head_y, yaw_deg):
     j3_y = head_y - dist_to_j3 * math.sin(yaw_rad)
     return np.array([j3_x, j3_y, yaw_rad, 0, 0, 0])
 
-def interpolate_arc_path(path_data, steps_per_node=10):
+def interpolate_arc_path(path_data, env, steps_per_node=10):
     """
-    Smart Interpolator:
+    Smart Interpolator with collision validation:
     - Detects Arcs
     - Detects 'Turn in Place' (Parking maneuvers)
     - Generates fluid animation for both
+    - Rejects interpolated frames that collide with the inflated zone
     """
     anim_frames = []
+    last_valid = path_data[0][0]
     
     for i in range(len(path_data) - 1):
         s1, dir1 = path_data[i] 
@@ -48,8 +50,14 @@ def interpolate_arc_path(path_data, steps_per_node=10):
                 # combined with angle interp creates the visual arc.
                 interp_state = s1 + t * (s2 - s1)
                 interp_state[2] = s1[2] + t * dth
-                
-            anim_frames.append(interp_state)
+            
+            # 3. Collision check: only show frames that are physically valid
+            if SnakeRobotModel.is_valid_state(interp_state, env):
+                anim_frames.append(interp_state)
+                last_valid = interp_state
+            else:
+                # Snap to last valid state to prevent visual wall penetration
+                anim_frames.append(last_valid)
             
     anim_frames.append(path_data[-1][0])
     return anim_frames
@@ -65,12 +73,12 @@ def main():
 
     planner = TailBaseRRT(env, START_STATE, GOAL_STATE)
     
-    print("\n🔍 Starting Hybrid RRT (Arc Cruise + Parking Mode)...")
+    print("\n[START] Starting Hybrid RRT (Arc Cruise + Parking Mode)...")
     frame_count = 0
     
     while not planner.finished:
         if frame_count > config.MAX_ITER:
-            print("⚠️ Max iterations reached.")
+            print("[WARN] Max iterations reached.")
             break
         if planner.step():
             break
@@ -79,11 +87,11 @@ def main():
             print(f"   Iteration: {frame_count} | Nodes: {len(planner.nodes)}")
 
     if not planner.path:
-        print("\n❌ Failed to find a path.")
+        print("\n[FAIL] Failed to find a path.")
         return
 
-    print("\n✅ Path Found! Generating Animation...")
-    anim_frames = interpolate_arc_path(planner.path, steps_per_node=15)
+    print("\n[OK] Path Found! Generating Animation...")
+    anim_frames = interpolate_arc_path(planner.path, env, steps_per_node=15)
     
     fig, ax = plt.subplots(figsize=(10, 10))
     ax.set_xlim(0, env.width)
@@ -99,6 +107,15 @@ def main():
     draw_ghost(START_STATE, 'green')
     draw_ghost(GOAL_STATE, 'red')
     
+    # Width envelope: shows the robot's actual physical footprint
+    # We must calculate the exact points-per-data-unit using the true axes bounding box,
+    # otherwise default figure margins make the line ~30% too thick.
+    fig.canvas.draw()
+    bbox = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+    width_in_points = config.SNAKE_WIDTH * (bbox.width / env.width) * 72
+    
+    line_width_envelope, = ax.plot([], [], color='cyan', lw=width_in_points,
+                                   alpha=0.15, solid_capstyle='butt', zorder=14)
     line_body, = ax.plot([], [], color='blue', lw=3, zorder=15)
     scat_joints = ax.scatter([], [], color='white', edgecolors='black', s=30, zorder=16)
     scat_head = ax.scatter([], [], color='gold', edgecolors='black', marker='D', s=50, zorder=17)
@@ -107,13 +124,14 @@ def main():
     line_trail, = ax.plot([], [], color='lime', lw=2, alpha=0.5)
 
     def init():
-        return line_body, line_trail, scat_joints, scat_head
+        return line_width_envelope, line_body, line_trail, scat_joints, scat_head
 
     def update(frame_idx):
         state = anim_frames[frame_idx]
         body = SnakeRobotModel.get_body_from_tail_base(state)
         bx, by = zip(*body)
         
+        line_width_envelope.set_data(bx, by)
         line_body.set_data(bx, by)
         scat_joints.set_offsets(body[1:-1])
         scat_head.set_offsets([body[0]])
@@ -123,7 +141,7 @@ def main():
         line_trail.set_data(trail_x, trail_y)
         
         ax.set_title(f"Simulation: {int(frame_idx/len(anim_frames)*100)}%")
-        return line_body, line_trail, scat_joints, scat_head
+        return line_width_envelope, line_body, line_trail, scat_joints, scat_head
 
     anim = FuncAnimation(fig, update, frames=len(anim_frames), init_func=init, 
                          interval=20, blit=True, repeat=False)
