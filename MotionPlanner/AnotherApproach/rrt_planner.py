@@ -137,8 +137,8 @@ class TailBaseRRT:
             
             joint_diff = np.max(np.abs(state[3:] - self.goal_state[3:]))
             
-            # 1. Tighter stopping condition (0.15 units)
-            if dist < 0.15 and joint_diff < 1.5:
+            # Tighter stopping condition for high precision
+            if dist < 0.15 and joint_diff < 1.0:
                 break
                 
             # Determine local coordinates
@@ -150,37 +150,44 @@ class TailBaseRRT:
                 locked_direction = 1.0 if local_x >= 0 else -1.0
             direction = locked_direction
             
-            # Clamp the denominator so we never divide by zero
-            dist_sq = max(dist * dist, 0.01)
+            # Pure pursuit curvature (safely clamped)
+            dist_sq = max(dist * dist, 0.001)
+            curvature = 2.0 * local_y / dist_sq
+            max_curv = math.sin(math.radians(config.JOINT_LIMIT)) / config.SEGMENT_LENGTH
+            curvature = max(-max_curv, min(max_curv, curvature))
             
-            # Only flatten out when EXTREMELY close (0.3 units)
-            if dist < 0.3:
-                q3_ideal_deg = self.goal_state[5] # Aim for final joint state
-                step_len = min(0.2, dist)         # Creep forward gently
+            L = config.SEGMENT_LENGTH
+            sin_q3 = (curvature * L) / direction
+            sin_q3 = max(-0.999, min(0.999, sin_q3))
+            pure_pursuit_angle = math.degrees(math.asin(sin_q3))
+            
+            # ADAPTIVE BLENDING
+            if dist < 0.5:
+                # Smoothly transition from position-seeking to angle-matching
+                weight = dist / 0.5 
+                q3_ideal_deg = (weight * pure_pursuit_angle) + ((1.0 - weight) * self.goal_state[5])
             else:
-                # Normal pure pursuit curvature
-                curvature = 2.0 * local_y / dist_sq
-                max_curv = math.sin(math.radians(config.JOINT_LIMIT)) / config.SEGMENT_LENGTH
-                curvature = max(-max_curv, min(max_curv, curvature))
+                q3_ideal_deg = pure_pursuit_angle
                 
-                L = config.SEGMENT_LENGTH
-                sin_q3 = (curvature * L) / direction
-                sin_q3 = max(-0.999, min(0.999, sin_q3))
-                q3_ideal_deg = math.degrees(math.asin(sin_q3))
-                
-                # Smoothly decelerate as we get closer to prevent overshooting
-                step_len = min(config.RRT_STEP_SIZE, max(0.2, dist * 0.5))
+            # RATE-LIMITED BASE TRANSLATION
+            # Move at max speed, unless the goal is closer than one max step.
+            step_len = min(config.RRT_STEP_SIZE, dist)
                 
             new_state = state.copy()
             
-            # Smooth Proportional Joint Straightening for front joints (q1, q2)
+            # RATE-LIMITED JOINT CONTROL (No teleporting!)
+            SAFE_JOINT_STEP = 5.0 # Max degrees a servo can swing per step
+            
+            # Front joints (q1, q2)
             joint_error_front = self.goal_state[3:5] - state[3:5]
-            for i in range(2):
-                new_state[3+i] += joint_error_front[i] * 0.4 
+            # Strictly clamp the error to physical limits
+            joint_step_front = np.clip(joint_error_front, -SAFE_JOINT_STEP, SAFE_JOINT_STEP)
+            new_state[3:5] += joint_step_front 
                     
-            # Smooth steering for the tail joint (q3)
+            # Tail joint (q3)
             q3_error = q3_ideal_deg - state[5]
-            new_state[5] += q3_error * 0.5 
+            q3_step = np.clip(q3_error, -SAFE_JOINT_STEP, SAFE_JOINT_STEP)
+            new_state[5] += q3_step 
                 
             new_state[3:] = np.clip(new_state[3:], -config.JOINT_LIMIT, config.JOINT_LIMIT)
             
