@@ -141,6 +141,13 @@ class TailBaseRRT:
             
             # Tighter stopping condition for high precision
             if dist < 0.15 and joint_diff < 1.0:
+                # Snap exactly to the mathematical goal state for a perfect fit
+                exact_node = Node(self.goal_state, current_node)
+                exact_node.direction = locked_direction if locked_direction is not None else 1.0
+                
+                # Return the exact goal node if it is collision-free
+                if SnakeRobotModel.is_valid_state(self.goal_state, self.env):
+                    return exact_node
                 break
                 
             # Determine local coordinates
@@ -211,7 +218,9 @@ class TailBaseRRT:
             current_node = new_node
             steps += 1
             
-        return current_node
+        # If it runs out of steps without perfectly docking, fail and let RRT try a different approach angle
+        print("   [WARN] Docking timed out before perfect alignment. Returning to RRT...")
+        return None
 
     def step(self):
         if self.finished: return False
