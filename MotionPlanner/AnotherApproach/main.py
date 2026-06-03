@@ -7,6 +7,7 @@ from environment import DebrisMap
 from rrt_planner import TailBaseRRT
 from robot_model import SnakeRobotModel
 import config
+import json
 
 def calculate_straight_state_from_head(head_x, head_y, yaw_deg):
     yaw_rad = np.deg2rad(yaw_deg)
@@ -92,6 +93,70 @@ def main():
 
     print("\n[OK] Path Found! Generating Animation...")
     anim_frames = interpolate_arc_path(planner.path, env, steps_per_node=15)
+    
+    # --- JSON Export Logic ---
+    SPROCKET_PITCH_RADIUS = 3.0
+    circumference = 2 * math.pi * SPROCKET_PITCH_RADIUS
+    MAX_RPM = 30.0
+    
+    commands = []
+    prev_state = None
+    
+    for i, state in enumerate(anim_frames):
+        x, y, yaw_rad, q1, q2, q3 = state
+        
+        if prev_state is None:
+            dist_moved = 0.0
+            revolutions = 0.0
+        else:
+            prev_x, prev_y = prev_state[:2]
+            dx = x - prev_x
+            dy = y - prev_y
+            dist_moved = math.hypot(dx, dy)
+            
+            # Determine the direction by checking the dot product of the movement vector against the base's heading (yaw_rad)
+            dot = dx * math.cos(yaw_rad) + dy * math.sin(yaw_rad)
+            if dot < 0:
+                dist_moved = -dist_moved
+                
+            revolutions = dist_moved / circumference
+            
+        # Calculate step duration based on MAX_RPM (RPM = rev/min)
+        if abs(revolutions) > 1e-6:
+            step_duration_ms = int(abs(revolutions) * 60000.0 / MAX_RPM)
+        else:
+            step_duration_ms = 0
+            
+        # Ensure a minimum duration to avoid divide-by-zero on pure stationary turns
+        step_duration_ms = max(50, step_duration_ms)
+        
+        command = {
+            "step_index": i,
+            "step_duration_ms": step_duration_ms,
+            "base_coordinates": {
+                "x": round(float(x), 4),
+                "y": round(float(y), 4),
+                "yaw_rad": round(float(yaw_rad), 4),
+                "yaw_deg": round(float(np.degrees(yaw_rad)), 4)
+            },
+            "dc_motor_command": {
+                "distance_units": round(float(dist_moved), 4),
+                "revolutions_required": round(float(revolutions), 4)
+            },
+            "servo_commands": {
+                "q1_deg": round(max(-config.JOINT_LIMIT, min(config.JOINT_LIMIT, float(state[3]))), 2),
+                "q2_deg": round(max(-config.JOINT_LIMIT, min(config.JOINT_LIMIT, float(state[4]))), 2),
+                "q3_deg": round(max(-config.JOINT_LIMIT, min(config.JOINT_LIMIT, float(state[5]))), 2)
+            }
+        }
+        commands.append(command)
+        prev_state = state
+
+    with open("robot_path_commands.json", "w") as f:
+        json.dump(commands, f, indent=4)
+        
+    print("[EXPORT] Saved robot_path_commands.json for STM32 control.")
+    # --------------------------
     
     fig, ax = plt.subplots(figsize=(10, 10))
     ax.set_xlim(0, env.width)
