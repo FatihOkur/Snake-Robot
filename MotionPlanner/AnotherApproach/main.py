@@ -64,7 +64,8 @@ def interpolate_arc_path(path_data, env, steps_per_node=10):
     return anim_frames
 
 def main():
-    env = DebrisMap(70, 70)
+    SELECTED_MAP = "complex_map"
+    env = DebrisMap(70, 70, map_type=SELECTED_MAP)
     # Start the head at (16.0, 22.0) facing North. 
     # Tail sits perfectly safe at (16.0, 10.0), clearing the bottom wall.
     START_STATE = calculate_straight_state_from_head(16.0, 22.0, 90)

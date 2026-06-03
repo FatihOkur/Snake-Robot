@@ -4,15 +4,18 @@ from scipy.ndimage import distance_transform_edt, map_coordinates
 import config
 
 class DebrisMap:
-    def __init__(self, width=70, height=70):
+    def __init__(self, width=70, height=70, map_type="base_map"):
         self.width = width
         self.height = height
         self.raw_grid = np.zeros((height, width))
         self.half_width = config.SNAKE_WIDTH / 2.0
-        self.create_chaos_field()
+        if map_type == "complex_map":
+            self.create_complex_map()
+        else:
+            self.create_base_map()
         self._build_distance_field()
 
-    def create_chaos_field(self):
+    def create_base_map(self):
         # 1. Fill the entire map with impassable debris
         self.raw_grid[:, :] = 1
 
@@ -31,6 +34,30 @@ class DebrisMap:
         
         # Path 5: Sharp 90-deg Turn Right to Goal (Vertical North)
         self.raw_grid[40:68, 20:30] = 0
+
+    def create_complex_map(self):
+        # Fill the raw_grid with 1s (impassable)
+        self.raw_grid[:, :] = 1
+        
+        # Carve out a start room at [5:35, 8:30]
+        self.raw_grid[5:35, 8:30] = 0
+        
+        # Carve out a main intersection/hallway at [25:50, 20:65]
+        self.raw_grid[25:50, 20:65] = 0
+        
+        # Carve out a goal room at [40:68, 15:40]
+        self.raw_grid[40:68, 15:40] = 0
+        
+        # Place several 3D-climbable debris piles
+        self.raw_grid[10:18, 22:28] = 1
+        self.raw_grid[30:38, 18:28] = 1
+        self.raw_grid[32:42, 45:55] = 1
+        self.raw_grid[50:56, 15:22] = 1
+        
+        # Smaller scattered chunks
+        self.raw_grid[26:29, 35:40] = 1
+        self.raw_grid[42:46, 30:36] = 1
+        self.raw_grid[20:23, 12:15] = 1
 
     def _build_distance_field(self):
         self.distance_field = distance_transform_edt(1 - self.raw_grid)
