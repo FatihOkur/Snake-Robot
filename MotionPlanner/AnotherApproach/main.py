@@ -68,7 +68,7 @@ def main():
     env = DebrisMap(70, 70, map_type=SELECTED_MAP)
     # Start the head at (16.0, 22.0) facing North. 
     # Tail sits perfectly safe at (16.0, 10.0), clearing the bottom wall.
-    START_STATE = calculate_straight_state_from_head(16.0, 22.0, 90)
+    START_STATE = calculate_straight_state_from_head(17.0, 22.0, 90)
 
     # Goal perfectly centered in the final vertical corridor, facing North.
     GOAL_STATE = calculate_straight_state_from_head(26.0, 60.0, 90)
