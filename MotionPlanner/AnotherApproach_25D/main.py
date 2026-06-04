@@ -19,9 +19,9 @@ def calculate_straight_state_from_head(head_x, head_y, yaw_deg):
 def interpolate_arc_path(path_data, env, steps_per_node=10):
     """
     Smart Interpolator with collision validation:
-    - Detects Arcs
     - Detects 'Turn in Place' (Parking maneuvers)
-    - Generates fluid animation for both
+    - Generates fluid animation for turns
+    - Disables interpolation for driving to avoid unphysical sliding
     - Rejects interpolated frames that collide with the inflated zone
     """
     anim_frames = []
@@ -37,28 +37,27 @@ def interpolate_arc_path(path_data, env, steps_per_node=10):
         while dth > math.pi: dth -= 2*math.pi
         while dth < -math.pi: dth += 2*math.pi
         
-        # 2. Interpolate
-        for t in np.linspace(0, 1, steps_per_node):
-            if dist_move < 0.1 and abs(dth) > 0.01:
+        # 2. Interpolate only Turn-in-Place
+        if dist_move < 0.1 and abs(dth) > 0.01:
+            for t in np.linspace(0, 1, steps_per_node):
                 # Pure Rotation (Turn in Place)
                 interp_state = s1.copy()
                 interp_state[2] = s1[2] + t * dth
                 # Joints might change too
                 interp_state[3:] = s1[3:] + t * (s2[3:] - s1[3:])
-            else:
-                # Drive (Linear/Arc approx)
-                # Since we are essentially connecting valid states, linear interp of state
-                # combined with angle interp creates the visual arc.
-                interp_state = s1 + t * (s2 - s1)
-                interp_state[2] = s1[2] + t * dth
-            
-            # 3. Collision check: only show frames that are physically valid
-            if SnakeRobotModel.is_valid_state(interp_state, env):
-                anim_frames.append(interp_state)
-                last_valid = interp_state
-            else:
-                # Snap to last valid state to prevent visual wall penetration
-                anim_frames.append(last_valid)
+                
+                # 3. Collision check: only show frames that are physically valid
+                if SnakeRobotModel.is_valid_state(interp_state, env):
+                    anim_frames.append(interp_state)
+                    last_valid = interp_state
+                else:
+                    # Snap to last valid state to prevent visual wall penetration
+                    anim_frames.append(last_valid)
+        else:
+            # Driving Maneuver (Disable linear sliding interpolation)
+            # Output the exact valid node from the RRT planner
+            anim_frames.append(s1)
+            last_valid = s1
             
     anim_frames.append(path_data[-1][0])
     return anim_frames
@@ -93,7 +92,7 @@ def main():
         return
 
     print("\n[OK] Path Found! Generating Animation...")
-    anim_frames = interpolate_arc_path(planner.path, env, steps_per_node=15)
+    anim_frames = interpolate_arc_path(planner.path, env, steps_per_node=40)
     
     # --- JSON Export Logic ---
     SPROCKET_PITCH_RADIUS = 3.0
@@ -106,7 +105,9 @@ def main():
     for i, state in enumerate(anim_frames):
         x, y, yaw_rad, q1, q2, q3 = state
         
-        body = SnakeRobotModel.get_body_from_tail_base(state)
+        body = SnakeRobotModel.get_body_from_tail_base(state, env)
+        if not body:
+            continue
         pitch_angles_deg = []
         for j in range(len(body)-1):
             x1, y1 = body[j]
@@ -221,7 +222,9 @@ def main():
 
     def update(frame_idx):
         state = anim_frames[frame_idx]
-        body = SnakeRobotModel.get_body_from_tail_base(state)
+        body = SnakeRobotModel.get_body_from_tail_base(state, env)
+        if not body:
+            return line_width_envelope, line_body, scat_joints, scat_head, line_profile, head_profile
         bx, by = zip(*body)
         
         # Update Top-Down View
@@ -249,7 +252,7 @@ def main():
         return line_width_envelope, line_body, scat_joints, scat_head, line_profile, head_profile
 
     anim = FuncAnimation(fig, update, frames=len(anim_frames), init_func=init, 
-                         interval=20, blit=True, repeat=False)
+                         interval=100, blit=True, repeat=False)
     plt.show()
 
 if __name__ == "__main__":
