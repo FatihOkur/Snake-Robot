@@ -16,44 +16,31 @@ class DebrisMap:
         self._build_distance_field()
 
     def create_base_map(self):
-        # 1. Fill the entire map with impassable debris
-        self.raw_grid[:, :] = 1
-
-        # 2. Carve an incredibly tight 10-unit wide winding spiral maze
-        # Path 1: Vertical Start (Bottom-Left)
-        self.raw_grid[2:30, 10:20] = 0
-        
-        # Path 2: Sharp 90-deg Turn Right (Horizontal East)
-        self.raw_grid[20:30, 10:50] = 0
-        
-        # Path 3: Sharp 90-deg Turn Left (Vertical North)
-        self.raw_grid[20:50, 40:50] = 0
-        
-        # Path 4: Sharp 90-deg Turn Left (Horizontal West)
-        self.raw_grid[40:50, 20:50] = 0
-        
-        # Path 5: Sharp 90-deg Turn Right to Goal (Vertical North)
-        self.raw_grid[40:68, 20:30] = 0
+        self.raw_grid[:, :] = 10.0
+        # Shifted the right-most paths left to fit within x=45
+        self.raw_grid[2:32, 8:22] = 0.0
+        self.raw_grid[18:32, 8:42] = 0.0
+        self.raw_grid[18:52, 28:42] = 0.0
+        self.raw_grid[38:52, 18:42] = 0.0
+        self.raw_grid[38:68, 18:32] = 0.0
 
     def create_complex_map(self):
-        # 1. Fill the entire map with impassable walls (10.0)
         self.raw_grid[:, :] = 10.0
         
-        # 2. Carve out the open rooms and hallways (0.0 flat ground)
-        self.raw_grid[5:35, 8:30] = 0.0      # Start room
-        self.raw_grid[25:50, 20:65] = 0.0    # Main intersection/hallway
-        self.raw_grid[40:68, 15:40] = 0.0    # Goal room
+        # Rooms and hallways (Intersection stops at 43 to leave a right debris wall)
+        self.raw_grid[3:37, 6:32] = 0.0      # Start room
+        self.raw_grid[23:52, 18:43] = 0.0    # Main intersection (Right wall preserved)
+        self.raw_grid[38:68, 13:42] = 0.0    # Goal room
         
-        # 3. Define ALL original debris as IMPASSABLE WALLS (10.0)
-        self.raw_grid[10:18, 22:28] = 10.0
-        self.raw_grid[50:56, 15:22] = 10.0
-        self.raw_grid[26:29, 35:40] = 10.0
-        self.raw_grid[42:46, 30:36] = 10.0
-        self.raw_grid[20:23, 12:15] = 10.0
+        # Define original debris as IMPASSABLE WALLS (10.0)
+        self.raw_grid[11:17, 23:27] = 10.0
+        self.raw_grid[51:55, 16:21] = 10.0
+        self.raw_grid[27:28, 36:39] = 10.0
+        self.raw_grid[43:45, 31:35] = 10.0
+        self.raw_grid[21:22, 13:14] = 10.0
         
-        # 4. OVERWRITE ONLY THE TARGETED PILES AS CLIMBABLE RUBBLE
-        self.raw_grid[30:38, 18:28] = 1.5   # Left targeted pile
-        self.raw_grid[32:42, 45:55] = 1.8   # Right targeted pile
+        # OVERWRITE ONLY THE LEFT TARGETED PILE
+        self.raw_grid[31:37, 19:27] = 1.5
 
     def _build_distance_field(self):
         binary_mask = (self.raw_grid > 4.0).astype(int)

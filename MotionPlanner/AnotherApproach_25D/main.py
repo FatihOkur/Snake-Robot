@@ -68,7 +68,7 @@ def interpolate_arc_path(path_data, env, steps_per_node=10):
 
 def main():
     SELECTED_MAP = "complex_map"
-    env = DebrisMap(70, 70, map_type=SELECTED_MAP)
+    env = DebrisMap(45, 70, map_type=SELECTED_MAP)
     # Start the head at (16.0, 22.0) facing North. 
     # Tail sits perfectly safe at (16.0, 10.0), clearing the bottom wall.
     START_STATE = calculate_straight_state_from_head(17.0, 22.0, 90)
@@ -184,7 +184,7 @@ def main():
     # --------------------------
     
     # --- VISUALIZATION SETUP ---
-    fig, (ax_top, ax_side) = plt.subplots(1, 2, figsize=(16, 8), gridspec_kw={'width_ratios': [2, 1]})
+    fig, (ax_top, ax_side) = plt.subplots(1, 2, figsize=(14, 8), gridspec_kw={'width_ratios': [1.5, 1]})
     
     # 1. Top-Down View
     ax_top.set_xlim(0, env.width)

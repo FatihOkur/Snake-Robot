@@ -65,7 +65,7 @@ def interpolate_arc_path(path_data, env, steps_per_node=10):
 
 def main():
     SELECTED_MAP = "complex_map"
-    env = DebrisMap(70, 70, map_type=SELECTED_MAP)
+    env = DebrisMap(45, 70, map_type=SELECTED_MAP)
     # Start the head at (16.0, 22.0) facing North. 
     # Tail sits perfectly safe at (16.0, 10.0), clearing the bottom wall.
     START_STATE = calculate_straight_state_from_head(17.0, 22.0, 90)
@@ -164,7 +164,7 @@ def main():
     print("[EXPORT] Saved robot_path_commands.json for STM32 control.")
     # --------------------------
     
-    fig, ax = plt.subplots(figsize=(10, 10))
+    fig, ax = plt.subplots(figsize=(7, 10))
     ax.set_xlim(0, env.width)
     ax.set_ylim(0, env.height)
     

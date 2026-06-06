@@ -16,48 +16,31 @@ class DebrisMap:
         self._build_distance_field()
 
     def create_base_map(self):
-        # 1. Fill the entire map with impassable debris
         self.raw_grid[:, :] = 1
-
-        # 2. Carve an incredibly tight 10-unit wide winding spiral maze
-        # Path 1: Vertical Start (Bottom-Left)
-        self.raw_grid[2:30, 10:20] = 0
-        
-        # Path 2: Sharp 90-deg Turn Right (Horizontal East)
-        self.raw_grid[20:30, 10:50] = 0
-        
-        # Path 3: Sharp 90-deg Turn Left (Vertical North)
-        self.raw_grid[20:50, 40:50] = 0
-        
-        # Path 4: Sharp 90-deg Turn Left (Horizontal West)
-        self.raw_grid[40:50, 20:50] = 0
-        
-        # Path 5: Sharp 90-deg Turn Right to Goal (Vertical North)
-        self.raw_grid[40:68, 20:30] = 0
+        # Shifted the right-most paths left to fit within x=45
+        self.raw_grid[2:32, 8:22] = 0
+        self.raw_grid[18:32, 8:42] = 0
+        self.raw_grid[18:52, 28:42] = 0
+        self.raw_grid[38:52, 18:42] = 0
+        self.raw_grid[38:68, 18:32] = 0
 
     def create_complex_map(self):
-        # Fill the raw_grid with 1s (impassable)
         self.raw_grid[:, :] = 1
         
-        # Carve out a start room at [5:35, 8:30]
-        self.raw_grid[5:35, 8:30] = 0
+        # Rooms and hallways (Intersection stops at 43 to leave a right debris wall)
+        self.raw_grid[3:37, 6:32] = 0      # Start room
+        self.raw_grid[23:52, 18:43] = 0    # Main intersection (Right wall preserved)
+        self.raw_grid[38:68, 13:42] = 0    # Goal room
         
-        # Carve out a main intersection/hallway at [25:50, 20:65]
-        self.raw_grid[25:50, 20:65] = 0
-        
-        # Carve out a goal room at [40:68, 15:40]
-        self.raw_grid[40:68, 15:40] = 0
-        
-        # Place several 3D-climbable debris piles
-        self.raw_grid[10:18, 22:28] = 1
-        self.raw_grid[30:38, 18:28] = 1
-        self.raw_grid[32:42, 45:55] = 1
-        self.raw_grid[50:56, 15:22] = 1
+        # 3D-climbable debris piles
+        self.raw_grid[11:17, 23:27] = 1
+        self.raw_grid[31:37, 19:27] = 1
+        self.raw_grid[51:55, 16:21] = 1
         
         # Smaller scattered chunks
-        self.raw_grid[26:29, 35:40] = 1
-        self.raw_grid[42:46, 30:36] = 1
-        self.raw_grid[20:23, 12:15] = 1
+        self.raw_grid[27:28, 36:39] = 1
+        self.raw_grid[43:45, 31:35] = 1
+        self.raw_grid[21:22, 13:14] = 1
 
     def _build_distance_field(self):
         self.distance_field = distance_transform_edt(1 - self.raw_grid)
