@@ -17,11 +17,12 @@ def main():
     model = YOLO('yolo11n-pose.pt')
     
     print("[VISION] Initializing camera interface...")
-    # V4L2 (Video4Linux2) arayüzünü açıkça belirtiyoruz
     cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
     
-    # KRİTİK DÜZELTME: "Reshape" hatasını önlemek için 
-    # kamera veriyi okumaya başlamadan ÖNCE boyutları 640x480 olarak sabitliyoruz.
+    # KRİTİK EKLENTİ: Kameradan veriyi MJPEG olarak talep et (Boş kare hatasını önler)
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+    
+    # Çözünürlüğü sabitle (Reshape hatasını önler)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     
@@ -47,7 +48,6 @@ def main():
         
         enhanced_frame = enhance_frame(frame)
         
-        # Sadece her N'inci karede YOLO çalıştır (İşlemci tasarrufu)
         if frame_count % PROCESS_EVERY_N_FRAMES == 0:
             results = model.predict(enhanced_frame, conf=0.25, imgsz=320, verbose=False)
             display_frame = results[0].plot()
