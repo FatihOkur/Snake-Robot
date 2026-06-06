@@ -144,10 +144,15 @@ def main():
                 "distance_units": round(float(dist_moved), 4),
                 "revolutions_required": round(float(revolutions), 4)
             },
-            "servo_commands": {
+            "servo_yaw_commands": {
                 "q1_deg": round(max(-config.JOINT_LIMIT, min(config.JOINT_LIMIT, float(state[3]))), 2),
                 "q2_deg": round(max(-config.JOINT_LIMIT, min(config.JOINT_LIMIT, float(state[4]))), 2),
                 "q3_deg": round(max(-config.JOINT_LIMIT, min(config.JOINT_LIMIT, float(state[5]))), 2)
+            },
+            "servo_pitch_commands": {
+                "q1_pitch_deg": 0.0,
+                "q2_pitch_deg": 0.0,
+                "q3_pitch_deg": 0.0
             }
         }
         commands.append(command)
