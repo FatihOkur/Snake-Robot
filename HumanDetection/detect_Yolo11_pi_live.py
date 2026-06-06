@@ -21,10 +21,9 @@ def main():
 
     print("[VISION] Starting live camera feed...")
     
-    # GStreamer iptal, doğrudan standart portu kullanıyoruz
-    cap = cv2.VideoCapture(0)
-    
-    # Çözünürlüğü manuel olarak düşürüyoruz ki FPS yüksek kalsın
+    # Raspberry Pi 5 için zırhlı V4L2 ve MJPG başlatma sekansı
+    cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
@@ -36,24 +35,29 @@ def main():
             print("[WARNING] Empty frame received, skipping...")
             continue
         
-        # Eğer kamera fiziksel olarak 90 derece yan duruyorsa bu satırı aktif et
+        # Eğer kamera fiziksel olarak 90 derece yan duruyorsa alttaki satırın başındaki '#' işaretini kaldır
         # frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
 
         frame_count += 1
         enhanced_frame = enhance_frame(frame)
         
-        # Sadece her N. karede yapay zekayı çalıştır
+        # 3. FRAME SKIPPING: Sadece her N. karede ağır yapay zekayı çalıştır
         if frame_count % PROCESS_EVERY_N_FRAMES == 0:
+            # İşlemciyi yormamak için 320 çözünürlüğünde tahmin yapıyoruz
             results = model.predict(enhanced_frame, conf=0.25, imgsz=320, verbose=False)
             display_frame = results[0].plot()
         else:
+            # Atlanan karelerde akıcılığı bozmamak için işlemsiz kareyi göster
             display_frame = enhanced_frame
         
+        # Sonucu ekrana bas
         cv2.imshow("YOLO11 Pose Estimation - Live", display_frame)
         
+        # 'q' tuşuna basınca çıkış yap
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
             
+    # Temizlik
     cap.release()
     cv2.destroyAllWindows()
     print("[SYSTEM] Live feed closed.")
