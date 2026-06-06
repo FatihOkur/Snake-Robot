@@ -27,6 +27,8 @@ def main():
         '--width', '640', 
         '--height', '480', 
         '--framerate', '30', 
+        '--vflip',        # Görüntüyü dikey çevir
+        '--hflip',        # Görüntüyü yatay çevir
         '-o', '-'
     ]
     
