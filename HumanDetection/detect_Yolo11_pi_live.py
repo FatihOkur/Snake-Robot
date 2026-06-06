@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from picamera2 import Picamera2
 from ultralytics import YOLO
 
 
@@ -25,63 +24,60 @@ def enhance_frame(frame: np.ndarray) -> np.ndarray:
 def main():
     print("[SYSTEM] Booting EDGE-OPTIMIZED YOLO11 Pose Estimation for ARM CPU...")
 
-    # ── Model ──────────────────────────────────
-    # yolo11n-pose.pt  →  nano variant, lowest memory & CPU footprint
     model = YOLO("yolo11n-pose.pt")
-
-    # Run inference only on every Nth frame to reduce CPU load
     PROCESS_EVERY_N_FRAMES = 3
 
-    # ── Camera (picamera2 — no libcamerify needed) ──
-    print("[VISION] Starting live camera feed via picamera2...")
+    print("[VISION] Starting live camera feed...")
 
-    picam2 = Picamera2()
+    # libcamerify KULLANMA — düz V4L2 + YUYV
+    # YUYV, libcamera'nın PiSP backend'inin desteklediği native format
+    cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
 
-    # BGR888 gives us a standard OpenCV-compatible 3-channel array directly.
-    # No MJPG / YUYV negotiation → no PiSP pixel-format crash.
-    config = picam2.create_preview_configuration(
-        main={"size": (640, 480), "format": "BGR888"}
-    )
-    picam2.configure(config)
-    picam2.start()
-    print("[VISION] Camera started successfully.")
+    if not cap.isOpened():
+        print("[ERROR] Kamera açılamadı! /dev/video0 mevcut mu kontrol et.")
+        return
+
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'YUYV'))
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    cap.set(cv2.CAP_PROP_FPS, 30)
+
+    # Gerçekte ne ayarlandığını logla
+    actual_w   = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    actual_h   = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    actual_fps = cap.get(cv2.CAP_PROP_FPS)
+    print(f"[VISION] Stream: {actual_w}x{actual_h} @ {actual_fps:.1f} fps")
 
     frame_count   = 0
-    display_frame = None          # keeps the last annotated frame during skipped frames
+    display_frame = None
 
     while True:
-        # capture_array() returns a numpy ndarray — no VideoCapture required
-        frame = picam2.capture_array()
+        ret, frame = cap.read()
 
-        if frame is None or frame.size == 0:
-            print("[WARNING] Empty frame received, skipping...")
+        if not ret or frame is None or frame.size == 0:
+            print("[WARNING] Boş kare, atlanıyor...")
             continue
 
-        # Uncomment the line below if the camera is physically mounted 90° sideways
+        # Kamera fiziksel olarak 90° yan duruyorsa bu satırı aç:
         # frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
 
         frame_count += 1
         enhanced_frame = enhance_frame(frame)
 
-        # ── Inference (every Nth frame only) ───
         if frame_count % PROCESS_EVERY_N_FRAMES == 0:
-            # imgsz=320 keeps inference fast on ARM; raise to 480 for more accuracy
             results       = model.predict(enhanced_frame, conf=0.25, imgsz=320, verbose=False)
             display_frame = results[0].plot()
         else:
-            # Show the enhanced frame while skipping inference
             display_frame = enhanced_frame
 
         cv2.imshow("YOLO11 Pose Estimation - Live", display_frame)
 
-        # Press 'q' to quit
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
-    # ── Cleanup ────────────────────────────────
-    picam2.stop()
+    cap.release()
     cv2.destroyAllWindows()
-    print("[SYSTEM] Live feed closed.")
+    print("[SYSTEM] Live feed kapatıldı.")
 
 
 if __name__ == "__main__":
