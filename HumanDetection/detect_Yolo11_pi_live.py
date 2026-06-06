@@ -22,17 +22,23 @@ def main():
     PROCESS_EVERY_N_FRAMES = 3 
 
     print("[VISION] Starting live camera feed...")
-    # Camera Initialization
-    # Note: Raspberry Pi 5 users might need to replace 0 with a GStreamer pipeline if libcamera causes issues.
-    cap = cv2.VideoCapture(0)
+    # Camera Initialization using GStreamer pipeline for Raspberry Pi 5 compatibility
+    gstreamer_pipeline = (
+        "libcamerasrc ! "
+        "video/x-raw, width=640, height=480, framerate=30/1 ! "
+        "videoconvert ! "
+        "video/x-raw, format=BGR ! "
+        "appsink"
+    )
+    cap = cv2.VideoCapture(gstreamer_pipeline, cv2.CAP_GSTREAMER)
 
     frame_count = 0
 
     while True:
         ret, frame = cap.read()
-        if not ret:
-            print("[ERROR] Failed to grab frame from camera.")
-            break
+        if not ret or frame is None or frame.size == 0:
+            print("[WARNING] Empty frame received, skipping...")
+            continue
         
         frame_count += 1
         enhanced_frame = enhance_frame(frame)
