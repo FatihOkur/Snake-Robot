@@ -129,10 +129,12 @@ class TailBaseRRT:
             dx = self.goal_state[0] - state[0]
             dy = self.goal_state[1] - state[1]
             dist = math.hypot(dx, dy)
+            # Calculate the yaw difference
+            yaw_diff = abs(self.normalize_angle(state[2] - self.goal_state[2]))
             joint_diff = np.max(np.abs(state[3:] - self.goal_state[3:]))
             
-            # Tighter stopping condition for high precision
-            if dist < 0.2 and joint_diff < 2.0:
+            # Tighter stopping condition for high precision: MUST include yaw_diff
+            if dist < 0.2 and joint_diff < 2.0 and yaw_diff < math.radians(3.0):
                 exact_node = Node(self.goal_state, current_node)
                 exact_node.direction = locked_direction if locked_direction is not None else 1.0
                 if SnakeRobotModel.is_valid_state(self.goal_state, self.env):

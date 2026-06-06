@@ -155,10 +155,12 @@ class TailBaseRRT:
             dy = self.goal_state[1] - state[1]
             dist = math.hypot(dx, dy)
             
+            # Calculate the yaw difference
+            yaw_diff = abs(self.normalize_angle(state[2] - self.goal_state[2]))
             joint_diff = np.max(np.abs(state[3:] - self.goal_state[3:]))
             
-            # Tighter stopping condition for high precision
-            if dist < 0.15 and joint_diff < 1.0:
+            # Tighter stopping condition for high precision: MUST include yaw_diff
+            if dist < 0.2 and joint_diff < 2.0 and yaw_diff < math.radians(3.0):
                 # Snap exactly to the mathematical goal state for a perfect fit
                 edge_cost = self.calculate_edge_cost(current_node.state, self.goal_state)
                 exact_node = Node(self.goal_state, current_node, edge_cost)
