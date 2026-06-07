@@ -108,20 +108,34 @@ def main():
         x, y, yaw_rad, q1, q2, q3 = state
         
         if prev_state is None:
-            dist_moved = 0.0
+            dist_head = 0.0
+            dist_link2 = 0.0
             revolutions = 0.0
         else:
+            body_old = SnakeRobotModel.get_body_from_tail_base(prev_state)
+            body_new = SnakeRobotModel.get_body_from_tail_base(state)
+            
+            # Segment 1 (Head) distance
+            head_old_x, head_old_y = body_old[1]
+            head_new_x, head_new_y = body_new[1]
+            dist_head = math.hypot(head_new_x - head_old_x, head_new_y - head_old_y)
+            
+            # Segment 3 (Link 2) distance
+            j3_old_x, j3_old_y = body_old[3]
+            j3_new_x, j3_new_y = body_new[3]
+            dist_link2 = math.hypot(j3_new_x - j3_old_x, j3_new_y - j3_old_y)
+            
+            # Determine the direction by checking the dot product of the movement vector against the base's heading (yaw_rad)
             prev_x, prev_y = prev_state[:2]
             dx = x - prev_x
             dy = y - prev_y
-            dist_moved = math.hypot(dx, dy)
-            
-            # Determine the direction by checking the dot product of the movement vector against the base's heading (yaw_rad)
             dot = dx * math.cos(yaw_rad) + dy * math.sin(yaw_rad)
             if dot < 0:
-                dist_moved = -dist_moved
+                dist_head = -dist_head
+                dist_link2 = -dist_link2
                 
-            revolutions = dist_moved / circumference
+            max_dist = max(abs(dist_head), abs(dist_link2))
+            revolutions = max_dist / circumference
             
         # Calculate step duration based on MAX_RPM (RPM = rev/min)
         if abs(revolutions) > 1e-6:
@@ -141,9 +155,9 @@ def main():
                 "yaw_rad": round(float(yaw_rad), 4),
                 "yaw_deg": round(float(np.degrees(yaw_rad)), 4)
             },
-            "dc_motor_command": {
-                "distance_units": round(float(dist_moved), 4),
-                "revolutions_required": round(float(revolutions), 4)
+            "dc_motor_commands": {
+                "segment1_head_distance_units": round(float(dist_head), 4),
+                "segment3_link2_distance_units": round(float(dist_link2), 4)
             },
             "servo_yaw_commands": {
                 "q1_deg": round(max(-config.JOINT_LIMIT, min(config.JOINT_LIMIT, float(state[3]))), 2),

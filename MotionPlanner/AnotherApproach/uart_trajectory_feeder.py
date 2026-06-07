@@ -22,11 +22,24 @@ def main():
     # 1. Load the Trajectory
     try:
         with open(JSON_FILE, 'r') as f:
-            trajectory = json.load(f)
-        print(f"[INFO] Loaded {len(trajectory)} steps from {JSON_FILE}")
+            raw_trajectory = json.load(f)
+        print(f"[INFO] Loaded {len(raw_trajectory)} raw steps from {JSON_FILE}")
     except Exception as e:
         print(f"[ERROR] Could not load JSON: {e}")
         sys.exit(1)
+
+    # 1.5 Stutter Filter: Remove mid-path steps where distance is 0.0
+    trajectory = []
+    for i, cmd in enumerate(raw_trajectory):
+        dist_head = float(cmd["dc_motor_commands"]["segment1_head_distance_units"])
+        dist_link2 = float(cmd["dc_motor_commands"]["segment3_link2_distance_units"])
+        
+        # Keep the step if it requires movement, OR if it's the very last step in the file
+        if dist_head != 0.0 or dist_link2 != 0.0 or i == (len(raw_trajectory) - 1):
+            trajectory.append(cmd)
+            
+    total_steps = len(trajectory)
+    print(f"[INFO] Filtered trajectory down to {total_steps} active steps.")
 
     # 2. Open UART Connection
     try:
@@ -38,7 +51,6 @@ def main():
         sys.exit(1)
 
     step_index = 0
-    total_steps = len(trajectory)
 
     print("[INFO] Waiting for STM32 to request the first step...")
 
@@ -54,9 +66,10 @@ def main():
                     
                     cmd = trajectory[step_index]
                     
-                    # Extract values
+                    # Extract values based on new JSON schema
                     duration_ms = int(cmd["step_duration_ms"])
-                    dc_revs = float(cmd["dc_motor_command"]["revolutions_required"])
+                    dist_head = float(cmd["dc_motor_commands"]["segment1_head_distance_units"])
+                    dist_link2 = float(cmd["dc_motor_commands"]["segment3_link2_distance_units"])
                     
                     # Yaw (Lateral)
                     q1_yaw = float(cmd["servo_yaw_commands"]["q1_deg"])
@@ -70,11 +83,11 @@ def main():
 
                     # 4. Pack into a compact binary struct
                     # '<' = Little Endian (Standard for STM32 ARM Cortex)
-                    # 'H' = unsigned short (2 bytes)
-                    # '7f' = 7 floats (28 bytes)
-                    payload = struct.pack('<H 7f', 
+                    # 'H' = unsigned short (2 bytes) for duration
+                    # '8f' = 8 floats (32 bytes) for distances and angles
+                    payload = struct.pack('<H 8f', 
                                           duration_ms, 
-                                          dc_revs, 
+                                          dist_head, dist_link2, 
                                           q1_yaw, q2_yaw, q3_yaw, 
                                           q1_pitch, q2_pitch, q3_pitch)
 
