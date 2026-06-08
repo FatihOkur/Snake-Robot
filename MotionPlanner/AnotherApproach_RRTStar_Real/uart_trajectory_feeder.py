@@ -28,14 +28,29 @@ def main():
         print(f"[ERROR] Could not load JSON: {e}")
         sys.exit(1)
 
-    # 1.5 Stutter Filter: Remove mid-path steps where distance is 0.0
+    # 1.5 Stutter Filter: Remove mid-path steps where distance is 0.0 AND no angles change
     trajectory = []
     for i, cmd in enumerate(raw_trajectory):
         dist_head = float(cmd["dc_motor_commands"]["segment1_head_distance_units"])
         dist_link2 = float(cmd["dc_motor_commands"]["segment3_link2_distance_units"])
         
-        # Keep the step if it requires movement, OR if it's the very last step in the file
-        if dist_head != 0.0 or dist_link2 != 0.0 or i == (len(raw_trajectory) - 1):
+        q1_yaw = float(cmd["servo_yaw_commands"]["q1_deg"])
+        q2_yaw = float(cmd["servo_yaw_commands"]["q2_deg"])
+        q3_yaw = float(cmd["servo_yaw_commands"]["q3_deg"])
+
+        angle_changed = False
+        if trajectory:
+            last_cmd = trajectory[-1]
+            last_q1 = float(last_cmd["servo_yaw_commands"]["q1_deg"])
+            last_q2 = float(last_cmd["servo_yaw_commands"]["q2_deg"])
+            last_q3 = float(last_cmd["servo_yaw_commands"]["q3_deg"])
+            if abs(q1_yaw - last_q1) > 0.1 or abs(q2_yaw - last_q2) > 0.1 or abs(q3_yaw - last_q3) > 0.1:
+                angle_changed = True
+        else:
+            angle_changed = True # Always keep the very first step to initialize pose
+        
+        # Keep the step if it requires movement, OR if angle changed, OR if it's the very last step
+        if dist_head != 0.0 or dist_link2 != 0.0 or angle_changed or i == (len(raw_trajectory) - 1):
             trajectory.append(cmd)
             
     total_steps = len(trajectory)
@@ -106,8 +121,14 @@ def main():
                     print(f"[STM32 DEBUG] {incoming.decode('utf-8', errors='ignore')}")
 
         # Trajectory Complete
-        print("[INFO] Trajectory complete. Sending END signal.")
-        ser.write(b'END\n')
+        print("[INFO] Trajectory complete. Sending END dummy packet.")
+        # Send dummy packet with duration = 0xFFFF (65535) and all zeroes
+        dummy_payload = struct.pack('<H 8f', 65535, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        dummy_checksum = calculate_checksum(dummy_payload)
+        dummy_packet = bytes([SYNC_BYTE_1, SYNC_BYTE_2]) + dummy_payload + bytes([dummy_checksum])
+        
+        ser.write(dummy_packet)
+        ser.flush()
         ser.close()
 
     except KeyboardInterrupt:
