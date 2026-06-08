@@ -201,7 +201,7 @@ def main():
     width_in_points = config.SNAKE_WIDTH * (bbox.width / env.width) * 72
     
     line_width_envelope, = ax.plot([], [], color='cyan', lw=width_in_points,
-                                   alpha=0.15, solid_capstyle='butt', zorder=14)
+                                   alpha=0.75, solid_capstyle='butt', zorder=14)
     line_body, = ax.plot([], [], color='blue', lw=3, zorder=15)
     scat_joints = ax.scatter([], [], color='white', edgecolors='black', s=30, zorder=16)
     scat_head = ax.scatter([], [], color='gold', edgecolors='black', marker='D', s=50, zorder=17)

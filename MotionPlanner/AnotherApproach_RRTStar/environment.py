@@ -44,10 +44,14 @@ class DebrisMap:
 
     def _build_distance_field(self):
         self.distance_field = distance_transform_edt(1 - self.raw_grid)
-        # Matplotlib imshow draws pixels from center-0.5 to center+0.5.
-        # We must add 0.5 to our clearance to prevent the continuous robot envelope 
-        # from touching the visual boundary of the discrete grid cells.
-        self.safe_threshold = self.half_width + 0.5
+
+        # Base visual pixel buffer for matplotlib discrete grid cells
+        pixel_buffer = 0.5
+
+        # Explicit safety margin to keep the robot's physical body away from obstacles
+        safety_margin = 1.0  # Note: Can be increased if more clearance is needed
+
+        self.safe_threshold = self.half_width + pixel_buffer + safety_margin
         self.planning_grid = (self.distance_field < self.safe_threshold).astype(int)
 
     def is_collision(self, x, y):
