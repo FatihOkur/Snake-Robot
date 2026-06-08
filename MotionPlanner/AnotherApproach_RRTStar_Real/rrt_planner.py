@@ -69,6 +69,27 @@ class TailBaseRRT:
                 config.COST_JOINT_WEIGHT * joint_changes + 
                 obs_penalty)
 
+    def _is_docking_feasible(self, state):
+        """Quick pre-check: is the docking corridor clear enough to bother trying?"""
+        # 1. Check clearance along the straight line from current base to goal base
+        n_samples = 10
+        for i in range(n_samples + 1):
+            t = i / n_samples
+            x = state[0] + t * (self.goal_state[0] - state[0])
+            y = state[1] + t * (self.goal_state[1] - state[1])
+            gx = int(max(0, min(self.env.width - 1, x)))
+            gy = int(max(0, min(self.env.height - 1, y)))
+            clearance = self.env.distance_field[gy, gx]
+            if clearance < self.env.safe_threshold + 1.0:
+                return False
+        
+        # 2. Large joint differences mean wide sweeps → more collision risk
+        joint_diff = np.max(np.abs(state[3:] - self.goal_state[3:]))
+        if joint_diff > 25.0:
+            return False
+        
+        return True
+
     def extend(self, from_state, to_state):
         x, y, theta = from_state[0], from_state[1], from_state[2]
         dx = to_state[0] - x
@@ -207,7 +228,7 @@ class TailBaseRRT:
                 
             # RATE-LIMITED BASE TRANSLATION
             # Move at max speed, unless the goal is closer than one max step.
-            step_len = min(config.RRT_STEP_SIZE, dist)
+            step_len = min(1.0, dist)  # Finer steps for docking precision
                 
             new_state = state.copy()
             
@@ -303,20 +324,22 @@ class TailBaseRRT:
             yaw_diff = abs(self.normalize_angle(best_state[2] - self.goal_state[2]))
             
             if d_pos < config.GOAL_POS_TOLERANCE and yaw_diff < np.deg2rad(config.GOAL_ANGLE_TOLERANCE):
-                print(f"[TARGET] RRT reached tolerance boundary! Nodes: {len(self.nodes)}")
-                print("[DOCK] Initiating Local Controller Docking Phase...")
-                
-                # Try to dock
-                final_node = self.run_local_controller(new_node)
-                
-                # If docking succeeds (doesn't return None), we are done!
-                if final_node is not None:
-                    self.finished = True
-                    self.final_node = final_node
-                    self.path = self.get_path(final_node)
-                    print("[OK] Docking Complete! Path Generated.")
-                    return True
-                # If it fails, the RRT loop just continues naturally to find a better angle.
+                # Quick pre-check: skip expensive docking if corridor is too tight
+                if self._is_docking_feasible(best_state):
+                    print(f"[TARGET] RRT reached tolerance boundary! Nodes: {len(self.nodes)}")
+                    print("[DOCK] Initiating Local Controller Docking Phase...")
+                    
+                    # Try to dock
+                    final_node = self.run_local_controller(new_node)
+                    
+                    # If docking succeeds (doesn't return None), we are done!
+                    if final_node is not None:
+                        self.finished = True
+                        self.final_node = final_node
+                        self.path = self.get_path(final_node)
+                        print("[OK] Docking Complete! Path Generated.")
+                        return True
+                    # If it fails, the RRT loop just continues naturally to find a better angle.
                 
         return False
 
