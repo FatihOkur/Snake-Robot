@@ -6,7 +6,7 @@ import sys
 
 # --- CONFIGURATION ---
 JSON_FILE = 'robot_path_commands.json'
-UART_PORT = '/dev/serial0'  # Default Pi 5 UART pin (GPIO 14/15). Change to /dev/ttyUSB0 if using a USB-TTL adapter.
+UART_PORT = '/dev/ttyAMA10'  # Default Pi 5 UART pin (GPIO 14/15). Change to /dev/ttyUSB0 if using a USB-TTL adapter.
 BAUD_RATE = 115200
 
 # STM32 signals

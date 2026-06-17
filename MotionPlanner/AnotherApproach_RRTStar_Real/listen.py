@@ -2,7 +2,7 @@ import serial
 
 # On Pi 5, the physical pins are often ttyAMA0, not serial0
 try:
-    ser = serial.Serial('/dev/ttyAMA0', 115200, timeout=1)
+    ser = serial.Serial('/dev/ttyAMA10', 115200, timeout=1)
     print("Listening to physical GPIO pins... Press Ctrl+C to stop.")
     while True:
         if ser.in_waiting > 0:
