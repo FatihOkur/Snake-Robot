@@ -6,12 +6,10 @@ import sys
 
 # --- CONFIGURATION ---
 JSON_FILE = 'robot_path_commands.json'
-UART_PORT = '/dev/ttyAMA10'  # Default Pi 5 UART pin (GPIO 14/15). Change to /dev/ttyUSB0 if using a USB-TTL adapter.
+UART_PORT = '/dev/ttyAMA10'  # Pi 5'in gerçek GPIO pinleri
 BAUD_RATE = 115200
 
-# STM32 signals
-STM32_REQ_SIGNAL = b'REQ'   # STM32 sends this when it has space in its ring buffer
-SYNC_BYTE_1 = 0xAA          # Header to prevent STM32 from reading misaligned data
+SYNC_BYTE_1 = 0xAA          
 SYNC_BYTE_2 = 0xBB
 
 def calculate_checksum(payload_bytes):
@@ -58,25 +56,33 @@ def main():
 
     # 2. Open UART Connection
     try:
+        # timeout=1 ensures readline() blocks cleanly without using 100% CPU
         ser = serial.Serial(UART_PORT, BAUD_RATE, timeout=1)
         print(f"[INFO] Connected to STM32 on {UART_PORT} at {BAUD_RATE} baud.")
-        time.sleep(2) # Brief pause to allow UART to stabilize
+        
+        # Temizlik: Pi açılırken hatta birikmiş olabilecek çöpleri (garbage) temizle
+        ser.reset_input_buffer()
+        time.sleep(1) 
     except Exception as e:
         print(f"[ERROR] Could not open UART: {e}")
         sys.exit(1)
 
     step_index = 0
-
     print("[INFO] Waiting for STM32 to request the first step...")
 
     # 3. Main Communication Loop
     try:
         while step_index < total_steps:
-            # Listen for the STM32's request signal ("REQ")
-            if ser.in_waiting > 0:
-                incoming = ser.readline().strip()
+            
+            # Doğrudan bloklayıcı (blocking) okuma yapıyoruz. in_waiting kullanmıyoruz.
+            incoming_bytes = ser.readline()
+            
+            if incoming_bytes:
+                # Gelen byteları metne çevirip gereksiz karakterleri atıyoruz
+                incoming_str = incoming_bytes.decode('utf-8', errors='ignore').strip()
                 
-                if incoming == STM32_REQ_SIGNAL:
+                # Eşitlik aramak yerine içinde "REQ" geçiyor mu diye bakıyoruz (Çok daha güvenli)
+                if "REQ" in incoming_str:
                     print(f"[TX] STM32 requested data. Sending Step {step_index + 1}/{total_steps}...")
                     
                     cmd = trajectory[step_index]
@@ -97,9 +103,6 @@ def main():
                     q3_pitch = float(cmd["servo_pitch_commands"]["q3_pitch_deg"])
 
                     # 4. Pack into a compact binary struct
-                    # '<' = Little Endian (Standard for STM32 ARM Cortex)
-                    # 'H' = unsigned short (2 bytes) for duration
-                    # '8f' = 8 floats (32 bytes) for distances and angles
                     payload = struct.pack('<H 8f', 
                                           duration_ms, 
                                           dist_head, dist_link2, 
@@ -116,13 +119,12 @@ def main():
                     ser.flush()
                     
                     step_index += 1
-                else:
-                    # Optional: Print debug messages sent from STM32
-                    print(f"[STM32 DEBUG] {incoming.decode('utf-8', errors='ignore')}")
+                elif incoming_str:
+                    # Gelen veri REQ değilse (örneğin STM32 bir hata mesajı basıyorsa) bunu ekrana yazdır.
+                    print(f"[STM32 DEBUG] {incoming_str}")
 
         # Trajectory Complete
         print("[INFO] Trajectory complete. Sending END dummy packet.")
-        # Send dummy packet with duration = 0xFFFF (65535) and all zeroes
         dummy_payload = struct.pack('<H 8f', 65535, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
         dummy_checksum = calculate_checksum(dummy_payload)
         dummy_packet = bytes([SYNC_BYTE_1, SYNC_BYTE_2]) + dummy_payload + bytes([dummy_checksum])
