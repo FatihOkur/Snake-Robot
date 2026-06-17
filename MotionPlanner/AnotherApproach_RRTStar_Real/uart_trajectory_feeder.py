@@ -6,7 +6,7 @@ import sys
 
 # --- CONFIGURATION ---
 JSON_FILE = 'robot_path_commands.json'
-UART_PORT = '/dev/ttyAMA0'  # Pi 5'in gerçek GPIO pinleri
+UART_PORT = '/dev/ttyAMA0'  # Sadece özel (exclusive) ve izole edilmiş UART portu
 BAUD_RATE = 115200
 
 SYNC_BYTE_1 = 0xAA          
@@ -56,56 +56,58 @@ def main():
 
     # 2. Open UART Connection
     try:
-        # timeout=1 ensures readline() blocks cleanly without using 100% CPU
-        ser = serial.Serial(UART_PORT, BAUD_RATE, timeout=1)
+        # KORUMA 1: exclusive=True ile Linux'un araya girmesini kesin olarak yasaklıyoruz.
+        ser = serial.Serial(UART_PORT, BAUD_RATE, timeout=1, exclusive=True)
         print(f"[INFO] Connected to STM32 on {UART_PORT} at {BAUD_RATE} baud.")
         
-        # Temizlik: Pi açılırken hatta birikmiş olabilecek çöpleri (garbage) temizle
+        # Temizlik: Pi açılırken hatta birikmiş olabilecek çöpleri temizle
         ser.reset_input_buffer()
         time.sleep(1) 
     except Exception as e:
-        print(f"[ERROR] Could not open UART: {e}")
+        print(f"[ERROR] Could not open UART. Port may be busy or disabled: {e}")
         sys.exit(1)
 
     step_index = 0
-    time.sleep(0.01)             # Pi'ye paket yolladıktan sonra 10ms nefes aldırır
-    ser.reset_input_buffer()     # Birikmiş, spam REQ mesajlarını çöpe atar               
-
     print("[INFO] Waiting for STM32 to request the first step...")
 
     # 3. Main Communication Loop
     try:
         while step_index < total_steps:
             
-            # Doğrudan bloklayıcı (blocking) okuma yapıyoruz. in_waiting kullanmıyoruz.
-            incoming_bytes = ser.readline()
+            # KORUMA 2: Anlık kablo kopmalarına ve gürültülere karşı okuma zırhı
+            try:
+                incoming_bytes = ser.readline()
+            except serial.SerialException as e:
+                print(f"\n[UYARI] Anlık bağlantı kopması veya gürültü tespit edildi: {e}")
+                print("[UYARI] Port kurtarılıyor, iletişim devam edecek...\n")
+                ser.reset_input_buffer()
+                time.sleep(0.1)
+                continue # Hatayı yoksay ve döngüye kaldığı yerden devam et
             
             if incoming_bytes:
                 # Gelen byteları metne çevirip gereksiz karakterleri atıyoruz
                 incoming_str = incoming_bytes.decode('utf-8', errors='ignore').strip()
                 
-                # Eşitlik aramak yerine içinde "REQ" geçiyor mu diye bakıyoruz (Çok daha güvenli)
+                # Sadece içinde "REQ" geçiyor mu diye bakıyoruz
                 if "REQ" in incoming_str:
                     print(f"[TX] STM32 requested data. Sending Step {step_index + 1}/{total_steps}...")
                     
                     cmd = trajectory[step_index]
                     
-                    # Extract values based on new JSON schema
+                    # Verileri Çek
                     duration_ms = int(cmd["step_duration_ms"])
                     dist_head = float(cmd["dc_motor_commands"]["segment1_head_distance_units"])
                     dist_link2 = float(cmd["dc_motor_commands"]["segment3_link2_distance_units"])
                     
-                    # Yaw (Lateral)
                     q1_yaw = float(cmd["servo_yaw_commands"]["q1_deg"])
                     q2_yaw = float(cmd["servo_yaw_commands"]["q2_deg"])
                     q3_yaw = float(cmd["servo_yaw_commands"]["q3_deg"])
                     
-                    # Pitch (Climbing)
                     q1_pitch = float(cmd["servo_pitch_commands"]["q1_pitch_deg"])
                     q2_pitch = float(cmd["servo_pitch_commands"]["q2_pitch_deg"])
                     q3_pitch = float(cmd["servo_pitch_commands"]["q3_pitch_deg"])
 
-                    # 4. Pack into a compact binary struct
+                    # Binary formatta paketle (<H 8f)
                     payload = struct.pack('<H 8f', 
                                           duration_ms, 
                                           dist_head, dist_link2, 
@@ -113,15 +115,22 @@ def main():
                                           q1_pitch, q2_pitch, q3_pitch)
 
                     checksum = calculate_checksum(payload)
-                    
-                    # Construct final packet: [SYNC1, SYNC2, PAYLOAD, CHECKSUM]
                     packet = bytes([SYNC_BYTE_1, SYNC_BYTE_2]) + payload + bytes([checksum])
                     
-                    # 5. Transmit
-                    ser.write(packet)
-                    ser.flush()
-                    
-                    step_index += 1
+                    # KORUMA 3: Anlık kopmalara karşı yazma zırhı
+                    try:
+                        ser.write(packet)
+                        ser.flush()
+                        step_index += 1
+                        
+                        # KORUMA 4: Makinalı tüfek gibi hızlı gitmeyi engelleyen fren ve temizleyici
+                        time.sleep(0.01)             # 10ms nefes aldırır (elektriksel oturma süresi)
+                        ser.reset_input_buffer()     # Birikmiş spam REQ mesajlarını çöpe atar
+                        
+                    except serial.SerialException:
+                        print("[HATA] Veri gönderilirken port koptu! Sistem bir sonraki REQ ile tekrar deneyecek.")
+                        time.sleep(0.1)
+
                 elif incoming_str:
                     # Gelen veri REQ değilse (örneğin STM32 bir hata mesajı basıyorsa) bunu ekrana yazdır.
                     print(f"[STM32 DEBUG] {incoming_str}")
@@ -132,8 +141,12 @@ def main():
         dummy_checksum = calculate_checksum(dummy_payload)
         dummy_packet = bytes([SYNC_BYTE_1, SYNC_BYTE_2]) + dummy_payload + bytes([dummy_checksum])
         
-        ser.write(dummy_packet)
-        ser.flush()
+        try:
+            ser.write(dummy_packet)
+            ser.flush()
+        except:
+            pass # Sonda koparsa görmezden gel
+            
         ser.close()
 
     except KeyboardInterrupt:
