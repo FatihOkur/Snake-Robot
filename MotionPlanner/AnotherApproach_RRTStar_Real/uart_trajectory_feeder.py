@@ -6,7 +6,7 @@ import sys
 
 # --- CONFIGURATION ---
 JSON_FILE = 'robot_path_commands.json'
-UART_PORT = '/dev/ttyAMA10'  # Pi 5'in gerçek GPIO pinleri
+UART_PORT = '/dev/ttyAMA0'  # Pi 5'in gerçek GPIO pinleri
 BAUD_RATE = 115200
 
 SYNC_BYTE_1 = 0xAA          
