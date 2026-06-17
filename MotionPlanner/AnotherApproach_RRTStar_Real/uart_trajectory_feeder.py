@@ -68,6 +68,9 @@ def main():
         sys.exit(1)
 
     step_index = 0
+    time.sleep(0.01)             # Pi'ye paket yolladıktan sonra 10ms nefes aldırır
+    ser.reset_input_buffer()     # Birikmiş, spam REQ mesajlarını çöpe atar               
+
     print("[INFO] Waiting for STM32 to request the first step...")
 
     # 3. Main Communication Loop
