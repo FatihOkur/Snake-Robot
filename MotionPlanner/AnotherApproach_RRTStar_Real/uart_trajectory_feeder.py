@@ -10,7 +10,7 @@ UART_PORT = '/dev/serial0'  # Default Pi 5 UART pin (GPIO 14/15). Change to /dev
 BAUD_RATE = 115200
 
 # STM32 signals
-STM32_REQ_SIGNAL = b'REQ\n'   # STM32 sends this when it has space in its ring buffer
+STM32_REQ_SIGNAL = b'REQ'   # STM32 sends this when it has space in its ring buffer
 SYNC_BYTE_1 = 0xAA          # Header to prevent STM32 from reading misaligned data
 SYNC_BYTE_2 = 0xBB
 
