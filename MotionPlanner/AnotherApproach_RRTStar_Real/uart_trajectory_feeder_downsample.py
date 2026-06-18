@@ -24,6 +24,15 @@ SYNC_BYTE_2 = 0xBB
 # deadband is ~1-2 deg. If servos still don't move on small steps, raise it.
 SERVO_DEADBAND_DEG = 2.0
 
+# Maximum DC distance (in planner units) allowed to accumulate into a single
+# sent step. Long straight corridors where the servo angle barely changes would
+# otherwise pile dozens of raw steps into one giant DC move that the motor PID
+# cannot reach in one go (this is what caused the step-50 stall). Capping it
+# splits long straights into several moderate moves WITHOUT touching angles.
+# Tune: a bit above your typical per-step distance (~0.15) times a few; e.g.
+# 1.5-2.5 units keeps each move to well under one motor revolution.
+MAX_DC_UNITS_PER_STEP = 2.0
+
 def calculate_checksum(payload_bytes):
     return sum(payload_bytes) & 0xFF
 
@@ -78,9 +87,13 @@ def main():
 
         is_last = (i == n - 1)
 
-        # Also emit if there is meaningful DC motion piled up but no further
-        # steps will come (last), or if angle threshold crossed.
-        if angle_moved or is_last:
+        # Emit when: servo angle crossed deadband, OR accumulated DC distance
+        # would exceed the per-step cap (prevents giant single moves on long
+        # straights), OR this is the final step.
+        dc_cap_hit = (abs(acc_head) >= MAX_DC_UNITS_PER_STEP or
+                      abs(acc_link2) >= MAX_DC_UNITS_PER_STEP)
+
+        if angle_moved or dc_cap_hit or is_last:
             merged = {
                 "step_duration_ms": int(cmd["step_duration_ms"]),
                 "dc_motor_commands": {
