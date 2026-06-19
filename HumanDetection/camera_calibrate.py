@@ -13,7 +13,7 @@ CHECKERBOARD = (8, 6)
 SQUARE_SIZE = 0.029  
 
 # Fotoğrafların bulunduğu klasör
-IMAGE_DIR = 'calibration_images/*.jpg'
+IMAGE_DIR = 'calibration_images/*jpg.jpeg'
 # ---------------
 
 # 3D gerçek dünya noktalarını hazırlıyoruz: (0,0,0), (1,0,0), (2,0,0) ...
