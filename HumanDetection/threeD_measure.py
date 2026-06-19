@@ -16,7 +16,7 @@ except:
     exit()
 
 # --- 2. CHECKPOINT (ARUCO) AYARLARI ---
-MARKER_SIZE = 0.035  # 3.5 cm
+MARKER_SIZE = 0.21  # 3.5 cm
 aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_1000)
 aruco_params = aruco.DetectorParameters()
 
