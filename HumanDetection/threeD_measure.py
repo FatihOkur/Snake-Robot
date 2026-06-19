@@ -2,7 +2,7 @@ import cv2
 import cv2.aruco as aruco
 import numpy as np
 import json
-import math
+import subprocess
 
 # --- 1. KALİBRASYON VERİLERİNİ YÜKLE ---
 try:
@@ -16,60 +16,79 @@ except:
     exit()
 
 # --- 2. CHECKPOINT (ARUCO) AYARLARI ---
-# Siyah karenin dış kenar uzunluğu metre cinsinden (3.5 cm = 0.035 m)
-MARKER_SIZE = 0.035  
-
-# ArUco sözlüğünü tanımla (Bastırdığınız PDF'ler DICT_4X4_1000 ailesinden)
+MARKER_SIZE = 0.035  # 3.5 cm
 aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_1000)
 aruco_params = aruco.DetectorParameters()
 
-# --- 3. KAMERAYI BAŞLAT ---
-cap = cv2.VideoCapture(0)
-# Kalibrasyon fotoğraflarını çektiğiniz çözünürlük (Örn: 640x480)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+# --- 3. DONANIM SEVİYESİNDE KAMERAYI BAŞLAT (RPICAM-VID) ---
+print("[VİZYON] Donanım kamera atlaması (rpicam-vid) başlatılıyor...")
+cmd = [
+    'rpicam-vid', '-t', '0', 
+    '--codec', 'mjpeg', 
+    '--width', '640', 
+    '--height', '480', 
+    '--framerate', '30', 
+    '--vflip',        # Görüntüyü dikey çevir (Donanımsal)
+    '--hflip',        # Görüntüyü yatay çevir (Donanımsal)
+    '-o', '-'
+]
+
+process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+bytes_data = b''
 
 print("[SİSTEM] Checkpoint Radar aktif. Çıkmak için 'q' tuşuna basın.")
 
 while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
+    # Görüntü baytlarını oku
+    bytes_data += process.stdout.read(4096)
+    
+    # JPEG çerçevesinin başlangıç ve bitişini bul
+    a = bytes_data.find(b'\xff\xd8')
+    b = bytes_data.find(b'\xff\xd9')
+    
+    if a != -1 and b != -1:
+        # Tam kare (frame) yakalandı
+        jpg = bytes_data[a:b+2]
+        bytes_data = bytes_data[b+2:] 
+        
+        # JPEG'i OpenCV formatına çevir
+        frame = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
+        
+        if frame is None:
+            continue
 
-    # Görüntüyü gri tonlamaya çevir
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        # Görüntüyü gri tonlamaya çevir (ArUco için)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    # Marker'ları ara
-    corners, ids, rejected = aruco.detectMarkers(gray, aruco_dict, parameters=aruco_params)
+        # Marker'ları ara
+        corners, ids, rejected = aruco.detectMarkers(gray, aruco_dict, parameters=aruco_params)
 
-    if ids is not None:
-        # Etiket bulunduysa, pozisyonunu tahmin et (Pose Estimation)
-        rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(corners, MARKER_SIZE, camera_matrix, dist_coeffs)
+        if ids is not None:
+            # Etiket bulunduysa 3D pozisyonunu hesapla
+            rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(corners, MARKER_SIZE, camera_matrix, dist_coeffs)
 
-        for i in range(len(ids)):
-            # Tespiti ekranda yeşil çerçeve ile çiz ve 3D eksenleri (X,Y,Z) göster
-            aruco.drawDetectedMarkers(frame, corners)
-            cv2.drawFrameAxes(frame, camera_matrix, dist_coeffs, rvecs[i], tvecs[i], 0.03)
+            for i in range(len(ids)):
+                # Çerçeve ve eksenleri çiz
+                aruco.drawDetectedMarkers(frame, corners)
+                cv2.drawFrameAxes(frame, camera_matrix, dist_coeffs, rvecs[i], tvecs[i], 0.03)
 
-            # tvecs[i][0] bize kameraya olan mesafeleri [X, Y, Z] olarak (Metre cinsinden) verir.
-            # Z: Kameradan ileri olan UZAKLIK
-            # X: Kameranın sağı/solu yatay kayması
-            x_m = tvecs[i][0][0]
-            y_m = tvecs[i][0][1]
-            z_m = tvecs[i][0][2]
+                # Mesafeleri hesapla
+                x_m = tvecs[i][0][0]
+                y_m = tvecs[i][0][1]
+                z_m = tvecs[i][0][2]
 
-            # Ekrana yazdırılacak metinleri hazırla (Santimetreye çevirerek)
-            distance_str = f"Mesafe (Z): {z_m*100:.1f} cm"
-            offset_str   = f"Yatay Kayma (X): {x_m*100:.1f} cm"
+                distance_str = f"Mesafe (Z): {z_m*100:.1f} cm"
+                offset_str   = f"Yatay Kayma (X): {x_m*100:.1f} cm"
 
-            cv2.putText(frame, f"ID: {ids[i][0]}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-            cv2.putText(frame, distance_str, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
-            cv2.putText(frame, offset_str, (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
+                cv2.putText(frame, f"ID: {ids[i][0]}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                cv2.putText(frame, distance_str, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
+                cv2.putText(frame, offset_str, (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
 
-    cv2.imshow("Yilan Robot - Checkpoint Tespiti", frame)
+        cv2.imshow("Yilan Robot - Checkpoint Tespiti", frame)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-cap.release()
+# Kapanış işlemleri
+process.terminate()
 cv2.destroyAllWindows()
