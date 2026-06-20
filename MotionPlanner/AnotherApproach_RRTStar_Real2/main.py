@@ -11,7 +11,7 @@ import json
 
 def calculate_straight_state_from_head(head_x, head_y, yaw_deg):
     yaw_rad = np.deg2rad(yaw_deg)
-    dist_to_j3= 9.0
+    dist_to_j3 = config.L_HEAD + config.L_SEG2 + config.L_SEG3
     j3_x = head_x - dist_to_j3 * math.cos(yaw_rad)
     j3_y = head_y - dist_to_j3 * math.sin(yaw_rad)
     return np.array([j3_x, j3_y, yaw_rad, 0, 0, 0])
@@ -19,9 +19,9 @@ def calculate_straight_state_from_head(head_x, head_y, yaw_deg):
 def interpolate_arc_path(path_data, env, steps_per_node=10):
     """
     Smart Interpolator with collision validation:
+    - Detects Arcs
     - Detects 'Turn in Place' (Parking maneuvers)
-    - Generates fluid animation for turns
-    - Disables interpolation for driving to avoid unphysical sliding
+    - Generates fluid animation for both
     - Rejects interpolated frames that collide with the inflated zone
     """
     anim_frames = []
@@ -46,15 +46,12 @@ def interpolate_arc_path(path_data, env, steps_per_node=10):
                 # Joints might change too
                 interp_state[3:] = s1[3:] + t * (s2[3:] - s1[3:])
             else:
-                # Curved Driving (Non-holonomic arc approximation)
-                interp_state = s1.copy()
-                heading = s1[2] + t * dth
-                interp_state[2] = heading
-                d_t = t * dist_move
-                interp_state[0] = s1[0] + d_t * math.cos(heading)
-                interp_state[1] = s1[1] + d_t * math.sin(heading)
-                interp_state[3:] = s1[3:] + t * (s2[3:] - s1[3:])
-                
+                # Drive (Linear/Arc approx)
+                # Since we are essentially connecting valid states, linear interp of state
+                # combined with angle interp creates the visual arc.
+                interp_state = s1 + t * (s2 - s1)
+                interp_state[2] = s1[2] + t * dth
+            
             # 3. Collision check: only show frames that are physically valid
             if SnakeRobotModel.is_valid_state(interp_state, env):
                 anim_frames.append(interp_state)
@@ -69,8 +66,8 @@ def interpolate_arc_path(path_data, env, steps_per_node=10):
 def main():
     SELECTED_MAP = "complex_map"
     env = DebrisMap(45, 70, map_type=SELECTED_MAP)
-    # Start the head at (16.0, 22.0) facing North. 
-    # Tail sits perfectly safe at (16.0, 10.0), clearing the bottom wall.
+    # Start the head at (17.0, 22.0) facing North. 
+    # Tail sits perfectly safe at (17.0, 10.0), clearing the bottom wall.
     START_STATE = calculate_straight_state_from_head(17.0, 22.0, 90)
 
     # Goal perfectly centered in the final vertical corridor, facing North.
@@ -95,7 +92,8 @@ def main():
         print("\n[FAIL] Failed to find a path.")
         return
 
-    print("\n[OK] Path Found! Generating Animation...")
+    print(f"\n[OK] Docking Complete! Total Cost: {planner.final_node.cost:.2f}")
+    print("[OK] Path Found! Generating Animation...")
     anim_frames = interpolate_arc_path(planner.path, env, steps_per_node=15)
     
     # --- JSON Export Logic ---
@@ -109,29 +107,13 @@ def main():
     for i, state in enumerate(anim_frames):
         x, y, yaw_rad, q1, q2, q3 = state
         
-        body = SnakeRobotModel.get_body_from_tail_base(state, env)
-        if not body:
-            continue
-        pitch_angles_deg = []
-        for j in range(len(body)-1):
-            x1, y1 = body[j]
-            x2, y2 = body[j+1]
-            z1 = env.get_elevation(x1, y1)
-            z2 = env.get_elevation(x2, y2)
-            dist_xy = math.hypot(x2 - x1, y2 - y1)
-            if dist_xy > 1e-5:
-                pitch = math.degrees(math.atan2(z2 - z1, dist_xy))
-            else:
-                pitch = 0.0
-            pitch_angles_deg.append(pitch)
-        
         if prev_state is None:
             dist_head = 0.0
             dist_link2 = 0.0
             revolutions = 0.0
         else:
-            body_old = SnakeRobotModel.get_body_from_tail_base(prev_state)
-            body_new = SnakeRobotModel.get_body_from_tail_base(state)
+            body_old = SnakeRobotModel.get_body_from_seg3_base(prev_state)
+            body_new = SnakeRobotModel.get_body_from_seg3_base(state)
             
             # Segment 1 (Head) distance
             head_old_x, head_old_y = body_old[1]
@@ -183,9 +165,9 @@ def main():
                 "q3_deg": round(max(-config.JOINT_LIMIT, min(config.JOINT_LIMIT, float(state[5]))), 2)
             },
             "servo_pitch_commands": {
-                "q1_pitch_deg": round(pitch_angles_deg[0] - pitch_angles_deg[1], 2),
-                "q2_pitch_deg": round(pitch_angles_deg[1] - pitch_angles_deg[2], 2),
-                "q3_pitch_deg": round(pitch_angles_deg[2] - pitch_angles_deg[3], 2)
+                "q1_pitch_deg": 0.0,
+                "q2_pitch_deg": 0.0,
+                "q3_pitch_deg": 0.0
             }
         }
         commands.append(command)
@@ -197,80 +179,58 @@ def main():
     print("[EXPORT] Saved robot_path_commands.json for STM32 control.")
     # --------------------------
     
-    # --- VISUALIZATION SETUP ---
-    fig, (ax_top, ax_side) = plt.subplots(1, 2, figsize=(14, 8), gridspec_kw={'width_ratios': [1.5, 1]})
+    fig, ax = plt.subplots(figsize=(7, 10))
+    ax.set_xlim(0, env.width)
+    ax.set_ylim(0, env.height)
     
-    # 1. Top-Down View
-    ax_top.set_xlim(0, env.width)
-    ax_top.set_ylim(0, env.height)
-    # Use 'terrain' colormap so Z-heights are visually distinct
-    ax_top.imshow(env.raw_grid, cmap='terrain', origin='lower', vmin=0, vmax=10.0)
-    ax_top.imshow(env.planning_grid, cmap='Reds', alpha=0.2, origin='lower')
-
-    line_width_envelope, = ax_top.plot([], [], color='cyan', lw=15, alpha=0.3, solid_capstyle='butt')
-    line_body, = ax_top.plot([], [], color='blue', lw=3)
-    scat_joints = ax_top.scatter([], [], color='white', edgecolors='black', s=30, zorder=16)
-    scat_head = ax_top.scatter([], [], color='gold', edgecolors='black', marker='D', s=50, zorder=17)
+    ax.imshow(env.raw_grid, cmap='Greys', origin='lower', vmin=0, vmax=1)
+    ax.imshow(env.planning_grid, cmap='Reds', alpha=0.2, origin='lower')
     
-    # 2. Side Profile (Z-Elevation) View
-    ax_side.set_xlim(-2, config.NUM_SEGMENTS * config.SEGMENT_LENGTH + 2)
-    ax_side.set_ylim(-1, 5)
-    ax_side.set_title("Side Profile (Z-Elevation Climbing)")
-    ax_side.set_xlabel("Distance Along Robot Spine")
-    ax_side.set_ylabel("Z Height (Terrain)")
-    ax_side.grid(True)
+    def draw_ghost(s, c):
+        b = SnakeRobotModel.get_body_from_seg3_base(s)
+        bx, by = zip(*b)
+        ax.plot(bx, by, color=c, lw=2, alpha=0.4)
+    draw_ghost(START_STATE, 'green')
+    draw_ghost(GOAL_STATE, 'red')
     
-    line_profile, = ax_side.plot([], [], color='blue', lw=4, marker='o', markersize=8, markerfacecolor='white', markeredgecolor='black')
-    head_profile, = ax_side.plot([], [], color='gold', marker='D', markersize=10, markeredgecolor='black', ls='')
-
-    # Plot Start and Goal visual markers
-    # Using the coordinates defined in START_STATE and GOAL_STATE
-    start_x, start_y = START_STATE[0], START_STATE[1]
-    goal_x, goal_y = GOAL_STATE[0], GOAL_STATE[1]
+    # Width envelope: shows the robot's actual physical footprint
+    # We must calculate the exact points-per-data-unit using the true axes bounding box,
+    # otherwise default figure margins make the line ~30% too thick.
+    fig.canvas.draw()
+    bbox = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+    width_in_points = config.SNAKE_WIDTH * (bbox.width / env.width) * 72
     
-    ax_top.scatter([start_x], [start_y], color='blue', marker='s', s=100, edgecolors='black', zorder=20)
-    ax_top.scatter([goal_x], [goal_y], color='green', marker='X', s=150, edgecolors='black', zorder=20)
+    line_width_envelope, = ax.plot([], [], color='cyan', lw=width_in_points,
+                                   alpha=0.75, solid_capstyle='butt', zorder=14)
+    line_body, = ax.plot([], [], color='blue', lw=3, zorder=15)
+    scat_joints = ax.scatter([], [], color='white', edgecolors='black', s=30, zorder=16)
+    scat_head = ax.scatter([], [], color='gold', edgecolors='black', marker='D', s=50, zorder=17)
     
-    # Add text labels
-    ax_top.text(start_x + 2, start_y, "Initial State", color='white', weight='bold', fontsize=10, ha='left', va='center', zorder=25, bbox=dict(facecolor='black', alpha=0.5, edgecolor='none', pad=2))
-    ax_top.text(goal_x + 2, goal_y, "Goal State", color='white', weight='bold', fontsize=10, ha='left', va='center', zorder=25, bbox=dict(facecolor='black', alpha=0.5, edgecolor='none', pad=2))
+    trail_x, trail_y = [], []
+    line_trail, = ax.plot([], [], color='lime', lw=2, alpha=0.5)
 
     def init():
-        return line_width_envelope, line_body, scat_joints, scat_head, line_profile, head_profile
+        return line_width_envelope, line_body, line_trail, scat_joints, scat_head
 
     def update(frame_idx):
         state = anim_frames[frame_idx]
-        body = SnakeRobotModel.get_body_from_tail_base(state, env)
-        if not body:
-            return line_width_envelope, line_body, scat_joints, scat_head, line_profile, head_profile
+        body = SnakeRobotModel.get_body_from_seg3_base(state)
         bx, by = zip(*body)
         
-        # Update Top-Down View
         line_width_envelope.set_data(bx, by)
         line_body.set_data(bx, by)
         scat_joints.set_offsets(body[1:-1])
         scat_head.set_offsets([body[0]])
         
-        # Update Side Profile View
-        z_coords = [env.get_elevation(x, y) for x, y in body]
+        trail_x.append(body[0][0])
+        trail_y.append(body[0][1])
+        line_trail.set_data(trail_x, trail_y)
         
-        # Calculate distance along the spine for the X-axis of the side plot
-        spine_dist = [0.0]
-        for i in range(1, len(body)):
-            dist_xy = math.hypot(body[i][0] - body[i-1][0], body[i][1] - body[i-1][1])
-            spine_dist.append(spine_dist[-1] + dist_xy)
-            
-        # Reverse distances so Head is on the right side of the plot
-        spine_dist = [max(spine_dist) - d for d in spine_dist]
-        
-        line_profile.set_data(spine_dist, z_coords)
-        head_profile.set_data([spine_dist[0]], [z_coords[0]]) 
-        
-        ax_top.set_title(f"2.5D Top-Down View | Progress: {int(frame_idx/len(anim_frames)*100)}%")
-        return line_width_envelope, line_body, scat_joints, scat_head, line_profile, head_profile
+        ax.set_title(f"Simulation: {int(frame_idx/len(anim_frames)*100)}%")
+        return line_width_envelope, line_body, line_trail, scat_joints, scat_head
 
     anim = FuncAnimation(fig, update, frames=len(anim_frames), init_func=init, 
-                         interval=10, blit=True, repeat=False)
+                         interval=20, blit=True, repeat=False)
     plt.show()
 
 if __name__ == "__main__":
