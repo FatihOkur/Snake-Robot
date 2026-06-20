@@ -5,8 +5,8 @@ NUM_SEGMENTS = 4       # Head + 4 Links
 NUM_JOINTS = 3      # J1, J2, J3
 L_HEAD = 3.0            # Segment 1
 L_SEG2 = 3.0            # Link 1
-L_SEG3 = 3.0            # Link 2 (The Anchor / Wheelbase)
-L_TAIL = 3.0            # Segment 4
+L_SEG3 = 4.0            # Link 2 (The Anchor / Wheelbase)
+L_TAIL = 2.0            # Segment 4
 SNAKE_WIDTH = 3.0       
 INFLATION_RADIUS = int(SNAKE_WIDTH / 2.0 + 1.0)
 
