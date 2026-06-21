@@ -36,11 +36,6 @@ SERVO_DEADBAND_DEG = 2.0
 # angles. Tune ~1.5-2.5 units.
 MAX_DC_UNITS_PER_STEP = 2.0
 
-# --- SENSOR FUSION: map starting pose (hardcoded for current deployment) ---
-START_X   = 17.0
-START_Y   = 10.0
-START_YAW = math.radians(90)          # facing +y = North
-
 # --- DYNAMIC REPLANNING ---
 REPLAN_THRESHOLD = 0.5                 # map units of position error before replan
 PLANNER_SCRIPT   = 'main.py'           # RRT* planner entry point
@@ -184,6 +179,9 @@ def main():
         sys.exit(1)
 
     # 2.5 Initialize the State Estimator (Sensor Fusion Engine)
+    START_X = float(trajectory[0]["base_coordinates"]["x"])
+    START_Y = float(trajectory[0]["base_coordinates"]["y"])
+    START_YAW = float(trajectory[0]["base_coordinates"]["yaw_rad"])
     estimator = StateEstimator(START_X, START_Y, START_YAW)
 
     step_index = 0
@@ -262,12 +260,10 @@ def main():
                                       f"{pos_error:.3f} units. "
                                       f"Recalculating path...")
 
-                                # Use last_sent_yaw for the physical joint state
-                                # (servos are deterministic, so the last command
-                                # we sent is the current physical configuration)
-                                cur_q1 = float(last_sent_yaw[0]) if last_sent_yaw else 0.0
-                                cur_q2 = float(last_sent_yaw[1]) if last_sent_yaw else 0.0
-                                cur_q3 = float(last_sent_yaw[2]) if last_sent_yaw else 0.0
+                                # Grab current joint states from the last sent command
+                                cur_q1 = float(prev_step["servo_yaw_commands"]["q1_deg"])
+                                cur_q2 = float(prev_step["servo_yaw_commands"]["q2_deg"])
+                                cur_q3 = float(prev_step["servo_yaw_commands"]["q3_deg"])
 
                                 script_dir = os.path.dirname(os.path.abspath(__file__))
                                 planner_path = os.path.join(script_dir, PLANNER_SCRIPT)
