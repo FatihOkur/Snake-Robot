@@ -4,6 +4,11 @@ import time
 import struct
 import sys
 import re
+import math
+import subprocess
+import os
+
+from state_estimator import StateEstimator
 
 # --- CONFIGURATION ---
 JSON_FILE = 'robot_path_commands.json'
@@ -30,6 +35,10 @@ SERVO_DEADBAND_DEG = 2.0
 # sent step. Splits long straights into several moderate moves WITHOUT touching
 # angles. Tune ~1.5-2.5 units.
 MAX_DC_UNITS_PER_STEP = 2.0
+
+# --- DYNAMIC REPLANNING ---
+REPLAN_THRESHOLD = 0.5                 # map units of position error before replan
+PLANNER_SCRIPT   = 'main.py'           # RRT* planner entry point
 
 
 def calculate_checksum(payload_bytes):
@@ -87,7 +96,7 @@ def main():
     n = len(raw_trajectory)
 
     def emit(idx_cmd, ah, al, q):
-        trajectory.append({
+        entry = {
             "step_duration_ms": int(idx_cmd["step_duration_ms"]),
             "dc_motor_commands": {
                 "segment1_head_distance_units": ah,
@@ -97,7 +106,12 @@ def main():
                 "q1_deg": q[0], "q2_deg": q[1], "q3_deg": q[2],
             },
             "servo_pitch_commands": idx_cmd["servo_pitch_commands"],
-        })
+        }
+        # Propagate base_coordinates from the raw command (needed for
+        # the replanning trigger to compare expected vs estimated position)
+        if "base_coordinates" in idx_cmd:
+            entry["base_coordinates"] = idx_cmd["base_coordinates"]
+        trajectory.append(entry)
 
     prev_cmd = None
 
@@ -164,6 +178,12 @@ def main():
         print(f"[ERROR] Could not open UART. Port may be busy or disabled: {e}")
         sys.exit(1)
 
+    # 2.5 Initialize the State Estimator (Sensor Fusion Engine)
+    START_X = float(trajectory[0]["base_coordinates"]["x"])
+    START_Y = float(trajectory[0]["base_coordinates"]["y"])
+    START_YAW = float(trajectory[0]["base_coordinates"]["yaw_rad"])
+    estimator = StateEstimator(START_X, START_Y, START_YAW)
+
     step_index = 0
     print("[INFO] Waiting for STM32 to request the first step...")
 
@@ -220,8 +240,111 @@ def main():
                               f"M2 cmd={cmd_m2:+.4f} meas={meas_m2:+.4f} "
                               f"slip={slip:+.4f} | "
                               f"M1 cmd={cmd_m1:+.4f} meas={meas_m1:+.4f}")
-                        # >>> Step 4 hook: feed meas_m2 (units) into the
-                        #     IMU+odometry dead-reckoning here.
+
+                        # --- SENSOR FUSION (Task 2): dead-reckon using meas_m2 ---
+                        est_x, est_y, est_yaw = estimator.update_odometry(meas_m2)
+                        print(f"[FUSION] Map Position: "
+                              f"X={est_x:.3f}  Y={est_y:.3f}  "
+                              f"Yaw={math.degrees(est_yaw):.1f}°")
+
+                        # --- DYNAMIC REPLANNING TRIGGER ---
+                        prev_step = trajectory[step_index - 1]
+                        if "base_coordinates" in prev_step:
+                            exp_x = prev_step["base_coordinates"]["x"]
+                            exp_y = prev_step["base_coordinates"]["y"]
+                            pos_error = math.hypot(est_x - exp_x, est_y - exp_y)
+                            print(f"[NAV] Position error: {pos_error:.3f} units")
+
+                            if pos_error > REPLAN_THRESHOLD:
+                                print(f"[REPLAN] Off course! Error = "
+                                      f"{pos_error:.3f} units. "
+                                      f"Recalculating path...")
+
+                                # Grab current joint states from the last sent command
+                                cur_q1 = float(prev_step["servo_yaw_commands"]["q1_deg"])
+                                cur_q2 = float(prev_step["servo_yaw_commands"]["q2_deg"])
+                                cur_q3 = float(prev_step["servo_yaw_commands"]["q3_deg"])
+
+                                script_dir = os.path.dirname(os.path.abspath(__file__))
+                                planner_path = os.path.join(script_dir, PLANNER_SCRIPT)
+
+                                replan_cmd = [
+                                    sys.executable, planner_path,
+                                    '--start_x',       str(est_x),
+                                    '--start_y',       str(est_y),
+                                    '--start_yaw_rad', str(est_yaw),
+                                    '--start_q1',      str(cur_q1),
+                                    '--start_q2',      str(cur_q2),
+                                    '--start_q3',      str(cur_q3),
+                                ]
+                                print(f"[REPLAN] Invoking: {' '.join(replan_cmd)}")
+                                result = subprocess.run(
+                                    replan_cmd,
+                                    cwd=script_dir,
+                                    capture_output=True, text=True, timeout=300,
+                                )
+                                print(result.stdout)
+                                if result.returncode != 0:
+                                    print(f"[REPLAN][ERROR] Planner failed:\n"
+                                          f"{result.stderr}")
+                                    print("[REPLAN] Continuing with OLD trajectory.")
+                                else:
+                                    # Reload the freshly planned trajectory
+                                    try:
+                                        json_path = os.path.join(script_dir, JSON_FILE)
+                                        with open(json_path, 'r') as jf:
+                                            new_raw = json.load(jf)
+                                        # Re-run the downsample pass
+                                        trajectory.clear()
+                                        acc_head = 0.0
+                                        acc_link2 = 0.0
+                                        last_sent_yaw = None
+                                        n = len(new_raw)
+                                        prev_cmd = None
+                                        for ii, ccmd in enumerate(new_raw):
+                                            dh, dl = get_dist(ccmd)
+                                            hr = (acc_head * dh < -1e-12)
+                                            lr = (acc_link2 * dl < -1e-12)
+                                            if (hr or lr) and prev_cmd is not None:
+                                                pq = get_yaw(prev_cmd)
+                                                emit(prev_cmd, acc_head, acc_link2, pq)
+                                                last_sent_yaw = pq
+                                                acc_head = 0.0
+                                                acc_link2 = 0.0
+                                            acc_head += dh
+                                            acc_link2 += dl
+                                            cq1, cq2, cq3 = get_yaw(ccmd)
+                                            if last_sent_yaw is None:
+                                                ang_moved = True
+                                            else:
+                                                ang_moved = (
+                                                    abs(cq1 - last_sent_yaw[0]) >= SERVO_DEADBAND_DEG or
+                                                    abs(cq2 - last_sent_yaw[1]) >= SERVO_DEADBAND_DEG or
+                                                    abs(cq3 - last_sent_yaw[2]) >= SERVO_DEADBAND_DEG
+                                                )
+                                            is_last = (ii == n - 1)
+                                            dc_cap = (
+                                                abs(acc_head) >= MAX_DC_UNITS_PER_STEP or
+                                                abs(acc_link2) >= MAX_DC_UNITS_PER_STEP
+                                            )
+                                            if ang_moved or dc_cap or is_last:
+                                                emit(ccmd, acc_head, acc_link2, (cq1, cq2, cq3))
+                                                last_sent_yaw = (cq1, cq2, cq3)
+                                                acc_head = 0.0
+                                                acc_link2 = 0.0
+                                            prev_cmd = ccmd
+
+                                        total_steps = len(trajectory)
+                                        step_index = 0
+                                        measured_odom.clear()
+                                        print(f"[REPLAN] Loaded new trajectory: "
+                                              f"{total_steps} steps. Resuming.")
+                                        continue  # immediately serve new step 0
+                                    except Exception as reload_err:
+                                        print(f"[REPLAN][ERROR] Failed to reload "
+                                              f"JSON: {reload_err}")
+                                        print("[REPLAN] Continuing with OLD "
+                                              "trajectory.")
 
                     if step_index >= total_steps:
                         break
@@ -290,6 +413,11 @@ def main():
                     print(f"[ODOM] step {total_steps-1:3d} | "
                           f"M2 cmd={cmd_m2:+.4f} meas={meas_m2:+.4f} "
                           f"slip={cmd_m2-meas_m2:+.4f}")
+                    # Final fusion update
+                    est_x, est_y, est_yaw = estimator.update_odometry(meas_m2)
+                    print(f"[FUSION] Final Map Position: "
+                          f"X={est_x:.3f}  Y={est_y:.3f}  "
+                          f"Yaw={math.degrees(est_yaw):.1f}°")
                 break
 
         print("[INFO] Trajectory complete. Sending END dummy packet.")
@@ -315,9 +443,14 @@ def main():
             print(f"[WARN] Could not save odometry log: {e}")
 
         ser.close()
+        estimator.stop()
 
     except KeyboardInterrupt:
         print("\n[WARN] Interrupted by user. Closing port.")
+        try:
+            estimator.stop()
+        except:
+            pass
         try:
             ser.close()
         except:
