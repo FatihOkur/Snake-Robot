@@ -233,12 +233,13 @@ def main():
                     # expects the robot to have moved.  This should trigger the
                     # dynamic replanning logic.
                     # ============================================================
-                    HAZARD_STEP = 5
+                    HAZARD_STEP = total_steps - 10
                     if step_index == HAZARD_STEP and m1_pulses is not None:
                         print("\n" + "=" * 60)
                         print("[TEST HAZARD] 🚨 The robot hit deep mud! "
                               "Motor 2 spun, but the robot moved 0 units.")
-                        print(f"[TEST HAZARD] Injecting slip at step_index={step_index}. "
+                        print(f"[TEST HAZARD] Injecting slip at step_index="
+                              f"{step_index} (of {total_steps}). "
                               f"Original m2_pulses={m2_pulses} -> forced to 0")
                         print("=" * 60 + "\n")
                         m2_pulses = 0
