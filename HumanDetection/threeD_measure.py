@@ -3,6 +3,8 @@ import cv2.aruco as aruco
 import numpy as np
 import json
 import subprocess
+import socket
+import math
 
 # --- 1. KALİBRASYON VERİLERİNİ YÜKLE ---
 try:
@@ -19,6 +21,19 @@ except:
 MARKER_SIZE = 0.21  # 3.5 cm
 aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_1000)
 aruco_params = aruco.DetectorParameters()
+
+# --- CHECKPOINT UDP BROADCAST (for StateEstimator in the UART feeder) ---
+CHECKPOINT_UDP_IP   = "127.0.0.1"
+CHECKPOINT_UDP_PORT = 5005
+_udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+# --- CAMERA-TO-MAP TRANSFORM (PLACEHOLDER — calibrate on robot!) ---
+# These offsets and scale convert the camera-frame (x_m, z_m) into the
+# planner's map coordinates.  Adjust after mounting and measuring.
+MAP_ORIGIN_X = 17.0      # map x of the camera's optical center
+MAP_ORIGIN_Y = 10.0      # map y of the camera's optical center
+MAP_SCALE    = 100.0      # metres -> map units (1 m = 100 cm ~= X map units)
+CAMERA_YAW_OFFSET = 0.0   # radians: rotation between camera frame and map frame
 
 # --- 3. DONANIM SEVİYESİNDE KAMERAYI BAŞLAT (RPICAM-VID) ---
 print("[VİZYON] Donanım kamera atlaması (rpicam-vid) başlatılıyor...")
@@ -83,6 +98,28 @@ while True:
                 cv2.putText(frame, f"ID: {ids[i][0]}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
                 cv2.putText(frame, distance_str, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
                 cv2.putText(frame, offset_str, (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
+
+                # --- CHECKPOINT BROADCAST (Task 4) ---
+                # Convert camera-frame pose to map coordinates.
+                # PLACEHOLDER TRANSFORM — adjust after physical calibration.
+                map_x = MAP_ORIGIN_X + x_m * MAP_SCALE
+                map_y = MAP_ORIGIN_Y + z_m * MAP_SCALE
+                # Derive yaw from rotation vector
+                rmat, _ = cv2.Rodrigues(rvecs[i])
+                map_yaw = math.atan2(rmat[1, 0], rmat[0, 0]) + CAMERA_YAW_OFFSET
+
+                checkpoint_msg = json.dumps({
+                    "x": round(float(map_x), 4),
+                    "y": round(float(map_y), 4),
+                    "yaw_rad": round(float(map_yaw), 6),
+                })
+                try:
+                    _udp_sock.sendto(
+                        checkpoint_msg.encode("utf-8"),
+                        (CHECKPOINT_UDP_IP, CHECKPOINT_UDP_PORT),
+                    )
+                except Exception:
+                    pass  # non-critical; feeder may not be running
 
         cv2.imshow("Yilan Robot - Checkpoint Tespiti", frame)
 
