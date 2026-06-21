@@ -65,16 +65,26 @@ def interpolate_arc_path(path_data, env, steps_per_node=10):
     return anim_frames
 
 def main():
-    # --- CLI argument parsing (supports --replan for dynamic replanning) ---
+    # --- CLI argument parsing (supports dynamic start state for replanning) ---
     parser = argparse.ArgumentParser(description="Snake Robot RRT* Path Planner")
-    parser.add_argument(
-        '--replan', type=str, default=None,
-        help='JSON string with current physical state for replanning: '
-             '{"x":...,"y":...,"yaw":...,"q1":...,"q2":...,"q3":...}'
-    )
+    parser.add_argument('--start_x',       type=float, default=None,
+                        help='Base (J3) X coordinate on the map')
+    parser.add_argument('--start_y',       type=float, default=None,
+                        help='Base (J3) Y coordinate on the map')
+    parser.add_argument('--start_yaw_rad', type=float, default=None,
+                        help='Base heading in radians')
+    parser.add_argument('--start_q1',      type=float, default=None,
+                        help='Joint 1 angle in degrees')
+    parser.add_argument('--start_q2',      type=float, default=None,
+                        help='Joint 2 angle in degrees')
+    parser.add_argument('--start_q3',      type=float, default=None,
+                        help='Joint 3 angle in degrees')
     args = parser.parse_args()
 
-    replan_mode = args.replan is not None
+    # Detect replan mode: all six start-state args must be provided together
+    start_args = [args.start_x, args.start_y, args.start_yaw_rad,
+                  args.start_q1, args.start_q2, args.start_q3]
+    replan_mode = all(v is not None for v in start_args)
 
     # Disable interactive matplotlib backend when replanning headlessly
     if replan_mode:
@@ -85,16 +95,11 @@ def main():
 
     if replan_mode:
         # --- REPLAN MODE: start from the robot's current physical state ---
-        try:
-            rp = json.loads(args.replan)
-            START_STATE = np.array([
-                float(rp["x"]),   float(rp["y"]),   float(rp["yaw"]),
-                float(rp["q1"]),  float(rp["q2"]),  float(rp["q3"]),
-            ])
-            print(f"[REPLAN] Start state from feeder: {START_STATE}")
-        except (json.JSONDecodeError, KeyError) as e:
-            print(f"[REPLAN][ERROR] Bad --replan JSON: {e}")
-            sys.exit(1)
+        START_STATE = np.array([
+            args.start_x, args.start_y, args.start_yaw_rad,
+            args.start_q1, args.start_q2, args.start_q3,
+        ])
+        print(f"[REPLAN] Start state from feeder: {START_STATE}")
     else:
         # --- NORMAL MODE: fixed starting pose ---
         # Start the head at (17.0, 22.0) facing North.

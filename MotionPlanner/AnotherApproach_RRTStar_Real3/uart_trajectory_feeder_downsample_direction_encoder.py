@@ -249,7 +249,7 @@ def main():
                               f"X={est_x:.3f}  Y={est_y:.3f}  "
                               f"Yaw={math.degrees(est_yaw):.1f}°")
 
-                        # --- DYNAMIC REPLANNING TRIGGER (Task 3) ---
+                        # --- DYNAMIC REPLANNING TRIGGER ---
                         prev_step = trajectory[step_index - 1]
                         if "base_coordinates" in prev_step:
                             exp_x = prev_step["base_coordinates"]["x"]
@@ -258,30 +258,32 @@ def main():
                             print(f"[NAV] Position error: {pos_error:.3f} units")
 
                             if pos_error > REPLAN_THRESHOLD:
-                                print("[REPLAN] ⚠ Slip threshold exceeded! "
-                                      "Recalculating path...")
-                                # Grab current joint angles from the last sent
-                                # command (best available — servos are deterministic)
-                                last_q1 = float(prev_step["servo_yaw_commands"]["q1_deg"])
-                                last_q2 = float(prev_step["servo_yaw_commands"]["q2_deg"])
-                                last_q3 = float(prev_step["servo_yaw_commands"]["q3_deg"])
+                                print(f"[REPLAN] Off course! Error = "
+                                      f"{pos_error:.3f} units. "
+                                      f"Recalculating path...")
 
-                                replan_state = json.dumps({
-                                    "x":   round(est_x, 4),
-                                    "y":   round(est_y, 4),
-                                    "yaw": round(est_yaw, 6),
-                                    "q1":  round(last_q1, 2),
-                                    "q2":  round(last_q2, 2),
-                                    "q3":  round(last_q3, 2),
-                                })
+                                # Use last_sent_yaw for the physical joint state
+                                # (servos are deterministic, so the last command
+                                # we sent is the current physical configuration)
+                                cur_q1 = float(last_sent_yaw[0]) if last_sent_yaw else 0.0
+                                cur_q2 = float(last_sent_yaw[1]) if last_sent_yaw else 0.0
+                                cur_q3 = float(last_sent_yaw[2]) if last_sent_yaw else 0.0
+
                                 script_dir = os.path.dirname(os.path.abspath(__file__))
                                 planner_path = os.path.join(script_dir, PLANNER_SCRIPT)
 
-                                print(f"[REPLAN] Invoking planner: "
-                                      f"python3 {PLANNER_SCRIPT} --replan '...'")
+                                replan_cmd = [
+                                    sys.executable, planner_path,
+                                    '--start_x',       str(est_x),
+                                    '--start_y',       str(est_y),
+                                    '--start_yaw_rad', str(est_yaw),
+                                    '--start_q1',      str(cur_q1),
+                                    '--start_q2',      str(cur_q2),
+                                    '--start_q3',      str(cur_q3),
+                                ]
+                                print(f"[REPLAN] Invoking: {' '.join(replan_cmd)}")
                                 result = subprocess.run(
-                                    [sys.executable, planner_path,
-                                     '--replan', replan_state],
+                                    replan_cmd,
                                     cwd=script_dir,
                                     capture_output=True, text=True, timeout=300,
                                 )
@@ -341,6 +343,7 @@ def main():
                                         measured_odom.clear()
                                         print(f"[REPLAN] Loaded new trajectory: "
                                               f"{total_steps} steps. Resuming.")
+                                        continue  # immediately serve new step 0
                                     except Exception as reload_err:
                                         print(f"[REPLAN][ERROR] Failed to reload "
                                               f"JSON: {reload_err}")
