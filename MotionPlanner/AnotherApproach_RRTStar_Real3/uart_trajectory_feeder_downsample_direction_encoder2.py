@@ -12,6 +12,7 @@ from state_estimator import StateEstimator
 
 # --- CONFIGURATION ---
 JSON_FILE = 'robot_path_commands.json'
+REPLAN_OUTPUT_FILE = 'replanned_path.json'
 UART_PORT = '/dev/ttyAMA0'
 BAUD_RATE = 115200
 
@@ -276,6 +277,7 @@ def main():
                                     '--start_q1',      str(cur_q1),
                                     '--start_q2',      str(cur_q2),
                                     '--start_q3',      str(cur_q3),
+                                    '--out',           REPLAN_OUTPUT_FILE,
                                 ]
                                 print(f"[REPLAN] Invoking: {' '.join(replan_cmd)}")
                                 result = subprocess.run(
@@ -291,7 +293,7 @@ def main():
                                 else:
                                     # Reload the freshly planned trajectory
                                     try:
-                                        json_path = os.path.join(script_dir, JSON_FILE)
+                                        json_path = os.path.join(script_dir, REPLAN_OUTPUT_FILE)
                                         with open(json_path, 'r') as jf:
                                             new_raw = json.load(jf)
                                         # Re-run the downsample pass
