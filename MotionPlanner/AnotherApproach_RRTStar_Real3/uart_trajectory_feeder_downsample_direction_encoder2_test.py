@@ -8,7 +8,7 @@ import math
 import subprocess
 import os
 
-from state_estimator import StateEstimator
+# StateEstimator import is deferred to main() to support --sim without crashing on I2C
 
 # --- CONFIGURATION ---
 JSON_FILE = 'robot_path_commands.json'
@@ -79,6 +79,86 @@ def pulses_to_units(pulses):
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--sim', action='store_true', help='Run in simulation mode without hardware')
+    args = parser.parse_args()
+    SIM_MODE = args.sim or os.environ.get("SIM_MODE") == "1"
+
+    if SIM_MODE:
+        from state_estimator_stub import StateEstimator
+        print("[INFO] Running in SIMULATION MODE.")
+        
+        class FakeSerial:
+            def __init__(self, port, baudrate, timeout=1, exclusive=True):
+                import queue
+                import threading
+                self.stm_to_feeder = queue.Queue()
+                self.feeder_to_stm = queue.Queue()
+                self.timeout = timeout
+                self.running = True
+                self.stm_to_feeder.put(b"REQ M1:0 M2:0\n")
+                self.thread = threading.Thread(target=self._daemon, daemon=True)
+                self.thread.start()
+
+            def _daemon(self):
+                import struct
+                import queue
+                buf = bytearray()
+                while self.running:
+                    try:
+                        chunk = self.feeder_to_stm.get(timeout=0.1)
+                        buf.extend(chunk)
+                    except queue.Empty:
+                        pass
+                    except Exception:
+                        continue
+
+                    while True:
+                        idx = buf.find(b'\xaa\xbb')
+                        if idx == -1:
+                            break
+                        if len(buf) >= idx + 37:
+                            packet = buf[idx:idx+37]
+                            buf = buf[idx+37:]
+                            payload = packet[2:36]
+                            try:
+                                duration_ms, dist_head, dist_link2, q1_yaw, q2_yaw, q3_yaw, q1_pitch, q2_pitch, q3_pitch = struct.unpack('<H 8f', payload)
+                                if duration_ms == 65535:
+                                    continue
+                                m1_p = round(dist_head * UNITS_TO_REV * PULSES_PER_REV)
+                                m2_p = round(dist_link2 * UNITS_TO_REV * PULSES_PER_REV)
+                                msg = f"REQ M1:{m1_p} M2:{m2_p}\n".encode('utf-8')
+                                self.stm_to_feeder.put(msg)
+                            except Exception as e:
+                                print(f"[SIM FakeSerial] unpack error: {e}")
+                        else:
+                            break
+
+            def readline(self):
+                import queue
+                try:
+                    return self.stm_to_feeder.get(timeout=self.timeout)
+                except queue.Empty:
+                    # Emulate STM32 sending idle REQs when no packet is actively being processed.
+                    # This breaks the deadlock after a replan when the feeder waits for the STM32 to request step 0.
+                    return b"REQ M1:0 M2:0\n"
+
+            def write(self, b):
+                self.feeder_to_stm.put(b)
+                return len(b)
+
+            def flush(self):
+                pass
+
+            def reset_input_buffer(self):
+                pass
+
+            def close(self):
+                self.running = False
+    else:
+        from state_estimator import StateEstimator
+
     # 1. Load the Trajectory
     try:
         with open(JSON_FILE, 'r') as f:
@@ -170,8 +250,12 @@ def main():
 
     # 2. Open UART Connection
     try:
-        ser = serial.Serial(UART_PORT, BAUD_RATE, timeout=1, exclusive=True)
-        print(f"[INFO] Connected to STM32 on {UART_PORT} at {BAUD_RATE} baud.")
+        if SIM_MODE:
+            ser = FakeSerial(UART_PORT, BAUD_RATE, timeout=1, exclusive=True)
+            print("[INFO] Connected to FAKE STM32 (Sim Mode).")
+        else:
+            ser = serial.Serial(UART_PORT, BAUD_RATE, timeout=1, exclusive=True)
+            print(f"[INFO] Connected to STM32 on {UART_PORT} at {BAUD_RATE} baud.")
         ser.reset_input_buffer()
         time.sleep(1)
     except Exception as e:
@@ -204,7 +288,10 @@ def main():
                 time.sleep(0.5)
                 while True:
                     try:
-                        ser = serial.Serial(UART_PORT, BAUD_RATE, timeout=1, exclusive=True)
+                        if SIM_MODE:
+                            ser = FakeSerial(UART_PORT, BAUD_RATE, timeout=1, exclusive=True)
+                        else:
+                            ser = serial.Serial(UART_PORT, BAUD_RATE, timeout=1, exclusive=True)
                         ser.reset_input_buffer()
                         print("[BILGI] Port kurtarildi. Devam ediliyor...\n")
                         break
@@ -234,7 +321,7 @@ def main():
                     HAZARD_STEP = total_steps - 10
                     if step_index == HAZARD_STEP and m1_pulses is not None:
                         print("\n" + "=" * 60)
-                        print("[TEST HAZARD] 🚨 The robot hit deep mud! "
+                        print("[TEST HAZARD] !!! The robot hit deep mud! "
                               "Motor 2 spun, but the robot moved 0 units.")
                         print(f"[TEST HAZARD] Injecting slip at step_index="
                               f"{step_index} (of {total_steps}). "
