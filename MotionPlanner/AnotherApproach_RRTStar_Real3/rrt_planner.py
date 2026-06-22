@@ -168,6 +168,13 @@ class TailBaseRRT:
         Optimized Proportional Controller for smooth docking.
         q2 is the primary steering joint. q1 and q3 snap toward goal.
         """
+        RELAX_POS = 0.3          # map units
+        RELAX_YAW = math.radians(5.0)
+
+        best_node = None
+        best_metric = float('inf')
+        dock_nodes = []
+
         current_node = start_node
         MAX_STEPS = 50 
         steps = 0
@@ -195,6 +202,10 @@ class TailBaseRRT:
                 
                 # Return the exact goal node if it is collision-free
                 if SnakeRobotModel.is_valid_state(self.goal_state, self.env):
+                    dock_nodes.append(exact_node)
+                    if dock_nodes:
+                        self.nodes.extend(dock_nodes)
+                        self.rebuild_kdtree()
                     return exact_node
                 break
                 
@@ -263,16 +274,39 @@ class TailBaseRRT:
             # Collision Check
             if not SnakeRobotModel.is_valid_state(new_state, self.env):
                 print("   [WARN] Docking trajectory blocked! Returning to RRT...")
+                if dock_nodes:
+                    self.nodes.extend(dock_nodes)
+                    self.rebuild_kdtree()
+                if best_node is not None:
+                    print("   [DOCK] Accepting near-dock (collision ahead).")
+                    return best_node
                 return None 
             
             edge_cost = self.calculate_edge_cost(current_node.state, new_state)
             new_node = Node(new_state, current_node, edge_cost)
             new_node.direction = direction
             current_node = new_node
+            dock_nodes.append(current_node)
+            
+            cur = current_node.state
+            cur_dpos = math.hypot(cur[0] - self.goal_state[0], cur[1] - self.goal_state[1])
+            cur_yaw = abs(self.normalize_angle(cur[2] - self.goal_state[2]))
+            if cur_dpos < RELAX_POS and cur_yaw < RELAX_YAW:
+                metric = cur_dpos + cur_yaw  # simple combined closeness
+                if metric < best_metric:
+                    best_metric = metric
+                    best_node = current_node
+
             steps += 1
             
         # If it runs out of steps without perfectly docking, fail and let RRT try a different approach angle
         print("   [WARN] Docking timed out before perfect alignment. Returning to RRT...")
+        if dock_nodes:
+            self.nodes.extend(dock_nodes)
+            self.rebuild_kdtree()
+        if best_node is not None:
+            print("   [DOCK] Accepting near-dock (timed out).")
+            return best_node
         return None
 
     def step(self):
