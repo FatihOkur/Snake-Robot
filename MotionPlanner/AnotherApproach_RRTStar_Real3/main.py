@@ -135,7 +135,7 @@ def main():
     anim_frames = interpolate_arc_path(planner.path, env, steps_per_node=15)
     
     # --- JSON Export Logic ---
-    SPROCKET_PITCH_RADIUS = 3.0
+    SPROCKET_PITCH_RADIUS = 0.7
     circumference = 2 * math.pi * SPROCKET_PITCH_RADIUS
     MAX_RPM = 30.0
     

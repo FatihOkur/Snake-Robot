@@ -32,7 +32,7 @@ _udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # planner's map coordinates.  Adjust after mounting and measuring.
 MAP_ORIGIN_X = 17.0      # map x of the camera's optical center
 MAP_ORIGIN_Y = 10.0      # map y of the camera's optical center
-MAP_SCALE    = 100.0      # metres -> map units (1 m = 100 cm ~= X map units)
+MAP_SCALE    = 10.0       # metres -> map units (1 m = 10 dm, 1 PU = 10 cm)
 CAMERA_YAW_OFFSET = 0.0   # radians: rotation between camera frame and map frame
 
 # --- 3. DONANIM SEVİYESİNDE KAMERAYI BAŞLAT (RPICAM-VID) ---

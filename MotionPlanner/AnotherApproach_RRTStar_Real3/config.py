@@ -3,11 +3,11 @@ import numpy as np
 # --- ROBOT PHYSICAL DIMENSIONS ---
 NUM_SEGMENTS = 4       # Head + 4 Links
 NUM_JOINTS = 3      # J1, J2, J3
-L_HEAD = 3.0            # Segment 1
-L_SEG2 = 3.0            # Link 1
-L_SEG3 = 4.0            # Link 2 (The Anchor / Wheelbase)
-L_TAIL = 2.0            # Segment 4
-SNAKE_WIDTH = 3.0       
+L_HEAD = 2.5            # Segment 1
+L_SEG2 = 3.05           # Link 1
+L_SEG3 = 3.65           # Link 2 (The Anchor / Wheelbase)
+L_TAIL = 2.05           # Segment 4
+SNAKE_WIDTH = 1.0       
 INFLATION_RADIUS = int(SNAKE_WIDTH / 2.0 + 1.0)
 
 # --- CONSTRAINTS ---
