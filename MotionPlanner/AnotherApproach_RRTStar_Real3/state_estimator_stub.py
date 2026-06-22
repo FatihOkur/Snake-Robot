@@ -12,25 +12,20 @@ class StateEstimator:
         self.x = float(start_x)
         self.y = float(start_y)
         self.yaw = float(start_yaw_rad)
+        self._yaw_drift = 0.0
         self._lock = threading.Lock()
         print(f"[SIM ESTIMATOR] Running in mock mode. Initial state: "
               f"X={self.x:.2f}  Y={self.y:.2f}  Yaw={math.degrees(self.yaw):.1f}°")
 
-    def update_odometry(self, meas_m2_units):
-        import inspect
-        try:
-            # Dynamically extract expected yaw from the feeder's state to ensure perfect tracking on curves
-            frame = inspect.currentframe().f_back
-            step_index = frame.f_locals.get("step_index")
-            trajectory = frame.f_locals.get("trajectory")
-            if step_index is not None and trajectory is not None and step_index > 0:
-                prev_step = trajectory[step_index - 1]
-                if "base_coordinates" in prev_step:
-                    self.yaw = float(prev_step["base_coordinates"]["yaw_rad"])
-        except Exception:
-            pass
-
+    def update_odometry(self, meas_m2_units, planned_yaw_rad=None):
+        import random
         with self._lock:
+            if planned_yaw_rad is not None:
+                self._yaw_drift += random.uniform(-0.002, 0.002)
+                # Keep it bounded
+                self._yaw_drift = max(-0.1, min(0.1, self._yaw_drift))
+                self.yaw = planned_yaw_rad + self._yaw_drift
+
             self.x += meas_m2_units * math.cos(self.yaw)
             self.y += meas_m2_units * math.sin(self.yaw)
             return (self.x, self.y, self.yaw)
@@ -40,6 +35,7 @@ class StateEstimator:
             self.x = float(true_x)
             self.y = float(true_y)
             self.yaw = float(true_yaw_rad)
+            self._yaw_drift = 0.0
         print(f"[SIM CHECKPOINT] Snap correction applied: "
               f"X={true_x:.2f}  Y={true_y:.2f}  Yaw={math.degrees(true_yaw_rad):.1f}°")
 

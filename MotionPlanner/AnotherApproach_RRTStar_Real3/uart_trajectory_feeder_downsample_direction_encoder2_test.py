@@ -12,6 +12,7 @@ import os
 
 # --- CONFIGURATION ---
 JSON_FILE = 'robot_path_commands.json'
+REPLAN_OUTPUT_FILE = 'replanned_path.json'
 UART_PORT = '/dev/ttyAMA0'
 BAUD_RATE = 115200
 
@@ -269,6 +270,7 @@ def main():
     estimator = StateEstimator(START_X, START_Y, START_YAW)
 
     step_index = 0
+    hazard_fired = False
     print("[INFO] Waiting for STM32 to request the first step...")
 
     # 3. Main Communication Loop
@@ -319,7 +321,7 @@ def main():
                     # dynamic replanning logic.
                     # ============================================================
                     HAZARD_STEP = total_steps - 10
-                    if step_index == HAZARD_STEP and m1_pulses is not None:
+                    if not hazard_fired and step_index == HAZARD_STEP and m1_pulses is not None:
                         print("\n" + "=" * 60)
                         print("[TEST HAZARD] !!! The robot hit deep mud! "
                               "Motor 2 spun, but the robot moved 0 units.")
@@ -328,6 +330,7 @@ def main():
                               f"Original m2_pulses={m2_pulses} -> forced to 0")
                         print("=" * 60 + "\n")
                         m2_pulses = 0
+                        hazard_fired = True
 
                     if m1_pulses is not None and step_index > 0:
                         meas_m2 = pulses_to_units(m2_pulses)
@@ -349,7 +352,11 @@ def main():
                               f"M1 cmd={cmd_m1:+.4f} meas={meas_m1:+.4f}")
 
                         # --- SENSOR FUSION (Task 2): dead-reckon using meas_m2 ---
-                        est_x, est_y, est_yaw = estimator.update_odometry(meas_m2)
+                        if SIM_MODE and step_index > 0 and "base_coordinates" in trajectory[step_index - 1]:
+                            planned_yaw = trajectory[step_index - 1]["base_coordinates"]["yaw_rad"]
+                            est_x, est_y, est_yaw = estimator.update_odometry(meas_m2, planned_yaw_rad=planned_yaw)
+                        else:
+                            est_x, est_y, est_yaw = estimator.update_odometry(meas_m2)
                         print(f"[FUSION] Map Position: "
                               f"X={est_x:.3f}  Y={est_y:.3f}  "
                               f"Yaw={math.degrees(est_yaw):.1f}°")
@@ -383,6 +390,7 @@ def main():
                                     '--start_q1',      str(cur_q1),
                                     '--start_q2',      str(cur_q2),
                                     '--start_q3',      str(cur_q3),
+                                    '--out',           REPLAN_OUTPUT_FILE
                                 ]
                                 print(f"[REPLAN] Invoking: {' '.join(replan_cmd)}")
                                 result = subprocess.run(
@@ -398,7 +406,7 @@ def main():
                                 else:
                                     # Reload the freshly planned trajectory
                                     try:
-                                        json_path = os.path.join(script_dir, JSON_FILE)
+                                        json_path = os.path.join(script_dir, REPLAN_OUTPUT_FILE)
                                         with open(json_path, 'r') as jf:
                                             new_raw = json.load(jf)
                                         # Re-run the downsample pass

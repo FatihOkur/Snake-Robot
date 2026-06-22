@@ -1,0 +1,3266 @@
+[
+    {
+        "step_index": 0,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.4699,
+            "y": 47.1276,
+            "yaw_rad": 1.7308,
+            "yaw_deg": 99.1653
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -10.32,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 1,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.4474,
+            "y": 47.2686,
+            "yaw_rad": 1.7306,
+            "yaw_deg": 99.1539
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1533,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -9.61,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 2,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.4248,
+            "y": 47.4097,
+            "yaw_rad": 1.7304,
+            "yaw_deg": 99.1424
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1529,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -8.89,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 3,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.4023,
+            "y": 47.5508,
+            "yaw_rad": 1.7302,
+            "yaw_deg": 99.131
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1525,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -8.18,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 4,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.3797,
+            "y": 47.6918,
+            "yaw_rad": 1.73,
+            "yaw_deg": 99.1196
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1521,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -7.46,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 5,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.3571,
+            "y": 47.8329,
+            "yaw_rad": 1.7298,
+            "yaw_deg": 99.1082
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1517,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -6.75,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 6,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.3346,
+            "y": 47.974,
+            "yaw_rad": 1.7296,
+            "yaw_deg": 99.0967
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1512,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -6.03,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 7,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.312,
+            "y": 48.115,
+            "yaw_rad": 1.7294,
+            "yaw_deg": 99.0853
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1508,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -5.32,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 8,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.2895,
+            "y": 48.2561,
+            "yaw_rad": 1.7292,
+            "yaw_deg": 99.0739
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1504,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -4.61,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 9,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.2669,
+            "y": 48.3972,
+            "yaw_rad": 1.729,
+            "yaw_deg": 99.0624
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.15,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -3.89,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 10,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.2443,
+            "y": 48.5382,
+            "yaw_rad": 1.7288,
+            "yaw_deg": 99.051
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1495,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -3.18,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 11,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.2218,
+            "y": 48.6793,
+            "yaw_rad": 1.7286,
+            "yaw_deg": 99.0396
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1491,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -2.46,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 12,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.1992,
+            "y": 48.8204,
+            "yaw_rad": 1.7284,
+            "yaw_deg": 99.0282
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1487,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -1.75,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 13,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.1767,
+            "y": 48.9614,
+            "yaw_rad": 1.7282,
+            "yaw_deg": 99.0167
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1482,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -1.03,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 14,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.1541,
+            "y": 49.1025,
+            "yaw_rad": 1.728,
+            "yaw_deg": 99.0053
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1478,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -0.32,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 15,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.1541,
+            "y": 49.1025,
+            "yaw_rad": 1.728,
+            "yaw_deg": 99.0053
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": -0.32,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 16,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.1381,
+            "y": 49.2444,
+            "yaw_rad": 1.7216,
+            "yaw_deg": 98.6387
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1672,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.36,
+            "q2_deg": -1.03,
+            "q3_deg": -0.36
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 17,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.1221,
+            "y": 49.3864,
+            "yaw_rad": 1.7152,
+            "yaw_deg": 98.2721
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1661,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.71,
+            "q2_deg": -1.75,
+            "q3_deg": -0.71
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 18,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.1061,
+            "y": 49.5284,
+            "yaw_rad": 1.7088,
+            "yaw_deg": 97.9056
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1651,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -1.07,
+            "q2_deg": -2.46,
+            "q3_deg": -1.07
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 19,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.09,
+            "y": 49.6703,
+            "yaw_rad": 1.7024,
+            "yaw_deg": 97.539
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.164,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -1.43,
+            "q2_deg": -3.18,
+            "q3_deg": -1.43
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 20,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.074,
+            "y": 49.8123,
+            "yaw_rad": 1.696,
+            "yaw_deg": 97.1724
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1629,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -1.79,
+            "q2_deg": -3.89,
+            "q3_deg": -1.79
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 21,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.058,
+            "y": 49.9542,
+            "yaw_rad": 1.6896,
+            "yaw_deg": 96.8058
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1618,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -2.14,
+            "q2_deg": -4.61,
+            "q3_deg": -2.14
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 22,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.042,
+            "y": 50.0962,
+            "yaw_rad": 1.6832,
+            "yaw_deg": 96.4392
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1607,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -2.5,
+            "q2_deg": -5.32,
+            "q3_deg": -2.5
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 23,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.0259,
+            "y": 50.2381,
+            "yaw_rad": 1.6768,
+            "yaw_deg": 96.0727
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1596,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -2.86,
+            "q2_deg": -6.03,
+            "q3_deg": -2.86
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 24,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.0099,
+            "y": 50.3801,
+            "yaw_rad": 1.6704,
+            "yaw_deg": 95.7061
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1585,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -3.21,
+            "q2_deg": -6.75,
+            "q3_deg": -3.21
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 25,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9939,
+            "y": 50.522,
+            "yaw_rad": 1.664,
+            "yaw_deg": 95.3395
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1574,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -3.57,
+            "q2_deg": -7.46,
+            "q3_deg": -3.57
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 26,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9779,
+            "y": 50.664,
+            "yaw_rad": 1.6576,
+            "yaw_deg": 94.9729
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1562,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -3.93,
+            "q2_deg": -8.18,
+            "q3_deg": -3.93
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 27,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9619,
+            "y": 50.806,
+            "yaw_rad": 1.6512,
+            "yaw_deg": 94.6063
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1551,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -4.29,
+            "q2_deg": -8.89,
+            "q3_deg": -4.29
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 28,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9458,
+            "y": 50.9479,
+            "yaw_rad": 1.6448,
+            "yaw_deg": 94.2397
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.154,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -4.64,
+            "q2_deg": -9.61,
+            "q3_deg": -4.64
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 29,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9298,
+            "y": 51.0899,
+            "yaw_rad": 1.6384,
+            "yaw_deg": 93.8732
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1528,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.0,
+            "q2_deg": -10.32,
+            "q3_deg": -5.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 30,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9298,
+            "y": 51.0899,
+            "yaw_rad": 1.6384,
+            "yaw_deg": 93.8732
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.0,
+            "q2_deg": -10.32,
+            "q3_deg": -5.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 31,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9204,
+            "y": 51.2324,
+            "yaw_rad": 1.6382,
+            "yaw_deg": 93.8617
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1533,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.0,
+            "q2_deg": -9.61,
+            "q3_deg": -5.21
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 32,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9109,
+            "y": 51.375,
+            "yaw_rad": 1.638,
+            "yaw_deg": 93.8503
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1529,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.0,
+            "q2_deg": -8.89,
+            "q3_deg": -5.42
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 33,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9015,
+            "y": 51.5175,
+            "yaw_rad": 1.6378,
+            "yaw_deg": 93.8389
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1525,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.0,
+            "q2_deg": -8.18,
+            "q3_deg": -5.63
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 34,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.892,
+            "y": 51.66,
+            "yaw_rad": 1.6376,
+            "yaw_deg": 93.8274
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1521,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.0,
+            "q2_deg": -7.46,
+            "q3_deg": -5.85
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 35,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8826,
+            "y": 51.8026,
+            "yaw_rad": 1.6374,
+            "yaw_deg": 93.816
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1517,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.0,
+            "q2_deg": -6.75,
+            "q3_deg": -6.06
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 36,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8731,
+            "y": 51.9451,
+            "yaw_rad": 1.6372,
+            "yaw_deg": 93.8046
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1512,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.0,
+            "q2_deg": -6.03,
+            "q3_deg": -6.27
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 37,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8637,
+            "y": 52.0877,
+            "yaw_rad": 1.637,
+            "yaw_deg": 93.7932
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1508,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.01,
+            "q2_deg": -5.32,
+            "q3_deg": -6.48
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 38,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8542,
+            "y": 52.2302,
+            "yaw_rad": 1.6368,
+            "yaw_deg": 93.7817
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1504,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.01,
+            "q2_deg": -4.61,
+            "q3_deg": -6.69
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 39,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8448,
+            "y": 52.3728,
+            "yaw_rad": 1.6366,
+            "yaw_deg": 93.7703
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.15,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.01,
+            "q2_deg": -3.89,
+            "q3_deg": -6.9
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 40,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8353,
+            "y": 52.5153,
+            "yaw_rad": 1.6364,
+            "yaw_deg": 93.7589
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1495,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.01,
+            "q2_deg": -3.18,
+            "q3_deg": -7.12
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 41,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8259,
+            "y": 52.6579,
+            "yaw_rad": 1.6362,
+            "yaw_deg": 93.7474
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1491,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.01,
+            "q2_deg": -2.46,
+            "q3_deg": -7.33
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 42,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8164,
+            "y": 52.8004,
+            "yaw_rad": 1.636,
+            "yaw_deg": 93.736
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1487,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.01,
+            "q2_deg": -1.75,
+            "q3_deg": -7.54
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 43,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.807,
+            "y": 52.9429,
+            "yaw_rad": 1.6358,
+            "yaw_deg": 93.7246
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1482,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.01,
+            "q2_deg": -1.03,
+            "q3_deg": -7.75
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 44,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.7975,
+            "y": 53.0855,
+            "yaw_rad": 1.6356,
+            "yaw_deg": 93.7132
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.1478,
+            "segment3_link2_distance_units": 0.1429
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.01,
+            "q2_deg": -0.32,
+            "q3_deg": -7.96
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 45,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.7975,
+            "y": 53.0855,
+            "yaw_rad": 1.6356,
+            "yaw_deg": 93.7132
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -5.01,
+            "q2_deg": -0.32,
+            "q3_deg": -7.96
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 46,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8021,
+            "y": 53.0142,
+            "yaw_rad": 1.6356,
+            "yaw_deg": 93.7112
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -4.65,
+            "q2_deg": -0.29,
+            "q3_deg": -7.61
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 47,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8067,
+            "y": 52.9429,
+            "yaw_rad": 1.6355,
+            "yaw_deg": 93.7093
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -4.3,
+            "q2_deg": -0.26,
+            "q3_deg": -7.25
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 48,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8113,
+            "y": 52.8716,
+            "yaw_rad": 1.6355,
+            "yaw_deg": 93.7074
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -3.94,
+            "q2_deg": -0.23,
+            "q3_deg": -6.89
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 49,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8159,
+            "y": 52.8004,
+            "yaw_rad": 1.6355,
+            "yaw_deg": 93.7055
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -3.58,
+            "q2_deg": -0.2,
+            "q3_deg": -6.53
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 50,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8206,
+            "y": 52.7291,
+            "yaw_rad": 1.6354,
+            "yaw_deg": 93.7036
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -3.22,
+            "q2_deg": -0.17,
+            "q3_deg": -6.18
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 51,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8252,
+            "y": 52.6578,
+            "yaw_rad": 1.6354,
+            "yaw_deg": 93.7016
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -2.87,
+            "q2_deg": -0.14,
+            "q3_deg": -5.82
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 52,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8298,
+            "y": 52.5865,
+            "yaw_rad": 1.6354,
+            "yaw_deg": 93.6997
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -2.51,
+            "q2_deg": -0.11,
+            "q3_deg": -5.46
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 53,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8344,
+            "y": 52.5152,
+            "yaw_rad": 1.6353,
+            "yaw_deg": 93.6978
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -2.15,
+            "q2_deg": -0.08,
+            "q3_deg": -5.11
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 54,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.839,
+            "y": 52.444,
+            "yaw_rad": 1.6353,
+            "yaw_deg": 93.6959
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -1.8,
+            "q2_deg": -0.05,
+            "q3_deg": -4.75
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 55,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8436,
+            "y": 52.3727,
+            "yaw_rad": 1.6353,
+            "yaw_deg": 93.6939
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -1.44,
+            "q2_deg": -0.01,
+            "q3_deg": -4.39
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 56,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8482,
+            "y": 52.3014,
+            "yaw_rad": 1.6352,
+            "yaw_deg": 93.692
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -1.08,
+            "q2_deg": 0.02,
+            "q3_deg": -4.03
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 57,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8528,
+            "y": 52.2301,
+            "yaw_rad": 1.6352,
+            "yaw_deg": 93.6901
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.72,
+            "q2_deg": 0.05,
+            "q3_deg": -3.68
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 58,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8574,
+            "y": 52.1588,
+            "yaw_rad": 1.6352,
+            "yaw_deg": 93.6882
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.37,
+            "q2_deg": 0.08,
+            "q3_deg": -3.32
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 59,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.862,
+            "y": 52.0876,
+            "yaw_rad": 1.6351,
+            "yaw_deg": 93.6863
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.01,
+            "q2_deg": 0.11,
+            "q3_deg": -2.96
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 60,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.862,
+            "y": 52.0876,
+            "yaw_rad": 1.6351,
+            "yaw_deg": 93.6863
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.01,
+            "q2_deg": 0.11,
+            "q3_deg": -2.96
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 61,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8666,
+            "y": 52.0163,
+            "yaw_rad": 1.635,
+            "yaw_deg": 93.6798
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.01,
+            "q2_deg": 0.13,
+            "q3_deg": -2.75
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 62,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8711,
+            "y": 51.945,
+            "yaw_rad": 1.6349,
+            "yaw_deg": 93.6733
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.01,
+            "q2_deg": 0.14,
+            "q3_deg": -2.54
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 63,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8756,
+            "y": 51.8737,
+            "yaw_rad": 1.6348,
+            "yaw_deg": 93.6668
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.01,
+            "q2_deg": 0.16,
+            "q3_deg": -2.33
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 64,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8802,
+            "y": 51.8024,
+            "yaw_rad": 1.6347,
+            "yaw_deg": 93.6604
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.01,
+            "q2_deg": 0.18,
+            "q3_deg": -2.12
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 65,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8847,
+            "y": 51.7311,
+            "yaw_rad": 1.6346,
+            "yaw_deg": 93.6539
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.01,
+            "q2_deg": 0.2,
+            "q3_deg": -1.9
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 66,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8893,
+            "y": 51.6599,
+            "yaw_rad": 1.6345,
+            "yaw_deg": 93.6474
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.01,
+            "q2_deg": 0.22,
+            "q3_deg": -1.69
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 67,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8938,
+            "y": 51.5886,
+            "yaw_rad": 1.6343,
+            "yaw_deg": 93.6409
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.01,
+            "q2_deg": 0.24,
+            "q3_deg": -1.48
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 68,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.8983,
+            "y": 51.5173,
+            "yaw_rad": 1.6342,
+            "yaw_deg": 93.6345
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.0,
+            "q2_deg": 0.25,
+            "q3_deg": -1.27
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 69,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9029,
+            "y": 51.446,
+            "yaw_rad": 1.6341,
+            "yaw_deg": 93.628
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.0,
+            "q2_deg": 0.27,
+            "q3_deg": -1.06
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 70,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9074,
+            "y": 51.3747,
+            "yaw_rad": 1.634,
+            "yaw_deg": 93.6215
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.0,
+            "q2_deg": 0.29,
+            "q3_deg": -0.85
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 71,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9119,
+            "y": 51.3034,
+            "yaw_rad": 1.6339,
+            "yaw_deg": 93.6151
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.0,
+            "q2_deg": 0.31,
+            "q3_deg": -0.63
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 72,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9165,
+            "y": 51.2322,
+            "yaw_rad": 1.6338,
+            "yaw_deg": 93.6086
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.0,
+            "q2_deg": 0.33,
+            "q3_deg": -0.42
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 73,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.921,
+            "y": 51.1609,
+            "yaw_rad": 1.6337,
+            "yaw_deg": 93.6021
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": -0.0,
+            "q2_deg": 0.34,
+            "q3_deg": -0.21
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 74,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9255,
+            "y": 51.0896,
+            "yaw_rad": 1.6336,
+            "yaw_deg": 93.5956
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0714,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.36,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 75,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9255,
+            "y": 51.0896,
+            "yaw_rad": 1.6336,
+            "yaw_deg": 93.5956
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.36,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 76,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9297,
+            "y": 51.0183,
+            "yaw_rad": 1.6328,
+            "yaw_deg": 93.5546
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0715,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.5,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 77,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9338,
+            "y": 50.947,
+            "yaw_rad": 1.6321,
+            "yaw_deg": 93.5136
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0715,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.64,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 78,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9379,
+            "y": 50.8757,
+            "yaw_rad": 1.6314,
+            "yaw_deg": 93.4725
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0715,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.78,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 79,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.942,
+            "y": 50.8043,
+            "yaw_rad": 1.6307,
+            "yaw_deg": 93.4315
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0715,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.92,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 80,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9462,
+            "y": 50.733,
+            "yaw_rad": 1.63,
+            "yaw_deg": 93.3904
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0716,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.05,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 81,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9503,
+            "y": 50.6617,
+            "yaw_rad": 1.6293,
+            "yaw_deg": 93.3494
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0716,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.19,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 82,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9544,
+            "y": 50.5904,
+            "yaw_rad": 1.6285,
+            "yaw_deg": 93.3084
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0716,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.33,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 83,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9585,
+            "y": 50.5191,
+            "yaw_rad": 1.6278,
+            "yaw_deg": 93.2673
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0716,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.47,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 84,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9626,
+            "y": 50.4478,
+            "yaw_rad": 1.6271,
+            "yaw_deg": 93.2263
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0716,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.61,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 85,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9668,
+            "y": 50.3765,
+            "yaw_rad": 1.6264,
+            "yaw_deg": 93.1853
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0716,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.75,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 86,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9709,
+            "y": 50.3052,
+            "yaw_rad": 1.6257,
+            "yaw_deg": 93.1442
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0716,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.88,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 87,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.975,
+            "y": 50.2339,
+            "yaw_rad": 1.625,
+            "yaw_deg": 93.1032
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0716,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 2.02,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 88,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9791,
+            "y": 50.1626,
+            "yaw_rad": 1.6242,
+            "yaw_deg": 93.0622
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0716,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 2.16,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 89,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9833,
+            "y": 50.0913,
+            "yaw_rad": 1.6235,
+            "yaw_deg": 93.0211
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0717,
+            "segment3_link2_distance_units": -0.0714
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 2.3,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 90,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9833,
+            "y": 50.0913,
+            "yaw_rad": 1.6235,
+            "yaw_deg": 93.0211
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 2.3,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 91,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9836,
+            "y": 50.0846,
+            "yaw_rad": 1.6233,
+            "yaw_deg": 93.0098
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0173,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 2.62,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 92,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9839,
+            "y": 50.078,
+            "yaw_rad": 1.6231,
+            "yaw_deg": 92.9984
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0174,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 2.95,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 93,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9843,
+            "y": 50.0714,
+            "yaw_rad": 1.6229,
+            "yaw_deg": 92.9871
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0174,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 3.28,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 94,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9846,
+            "y": 50.0648,
+            "yaw_rad": 1.6227,
+            "yaw_deg": 92.9757
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0174,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 3.6,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 95,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.985,
+            "y": 50.0582,
+            "yaw_rad": 1.6225,
+            "yaw_deg": 92.9644
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0175,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 3.93,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 96,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9853,
+            "y": 50.0515,
+            "yaw_rad": 1.6223,
+            "yaw_deg": 92.953
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0175,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 4.26,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 97,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9856,
+            "y": 50.0449,
+            "yaw_rad": 1.6221,
+            "yaw_deg": 92.9417
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0175,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 4.58,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 98,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.986,
+            "y": 50.0383,
+            "yaw_rad": 1.6219,
+            "yaw_deg": 92.9303
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0176,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 4.91,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 99,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9863,
+            "y": 50.0317,
+            "yaw_rad": 1.6217,
+            "yaw_deg": 92.919
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0176,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 5.23,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 100,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9867,
+            "y": 50.0251,
+            "yaw_rad": 1.6215,
+            "yaw_deg": 92.9076
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0176,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 5.56,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 101,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.987,
+            "y": 50.0185,
+            "yaw_rad": 1.6213,
+            "yaw_deg": 92.8963
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0177,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 5.89,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 102,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9873,
+            "y": 50.0118,
+            "yaw_rad": 1.6211,
+            "yaw_deg": 92.8849
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0177,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 6.21,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 103,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9877,
+            "y": 50.0052,
+            "yaw_rad": 1.621,
+            "yaw_deg": 92.8736
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0177,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 6.54,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 104,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.988,
+            "y": 49.9986,
+            "yaw_rad": 1.6208,
+            "yaw_deg": 92.8623
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0178,
+            "segment3_link2_distance_units": -0.0066
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 6.87,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 105,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.988,
+            "y": 49.9986,
+            "yaw_rad": 1.6208,
+            "yaw_deg": 92.8623
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 6.87,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 106,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9881,
+            "y": 49.9977,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.8619
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 6.51,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 107,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9881,
+            "y": 49.9969,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.8614
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 6.15,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 108,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9881,
+            "y": 49.996,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.861
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 5.79,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 109,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9882,
+            "y": 49.9952,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.8606
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 5.44,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 110,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9882,
+            "y": 49.9943,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.8602
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 5.08,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 111,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9883,
+            "y": 49.9934,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.8598
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 4.72,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 112,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9883,
+            "y": 49.9926,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.8594
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 4.37,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 113,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9884,
+            "y": 49.9917,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.859
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 4.01,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 114,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9884,
+            "y": 49.9908,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.8586
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 3.65,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 115,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9884,
+            "y": 49.99,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.8582
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 3.29,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 116,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9885,
+            "y": 49.9891,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.8578
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 2.94,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 117,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9885,
+            "y": 49.9883,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.8574
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 2.58,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 118,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9874,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.857
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 2.22,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 119,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.8566
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": -0.0187,
+            "segment3_link2_distance_units": -0.0009
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.87,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 120,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.6207,
+            "yaw_deg": 92.8566
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.87,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 121,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.6171,
+            "yaw_deg": 92.6526
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.73,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 122,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.6135,
+            "yaw_deg": 92.4485
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.6,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 123,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.61,
+            "yaw_deg": 92.2445
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.47,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 124,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.6064,
+            "yaw_deg": 92.0404
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.33,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 125,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.6028,
+            "yaw_deg": 91.8364
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.2,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 126,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.5993,
+            "yaw_deg": 91.6324
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 1.07,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 127,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.5957,
+            "yaw_deg": 91.4283
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.93,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 128,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.5922,
+            "yaw_deg": 91.2243
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.8,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 129,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.5886,
+            "yaw_deg": 91.0202
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.67,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 130,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.585,
+            "yaw_deg": 90.8162
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.53,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 131,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.5815,
+            "yaw_deg": 90.6121
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.4,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 132,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.5779,
+            "yaw_deg": 90.4081
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.27,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 133,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.5744,
+            "yaw_deg": 90.204
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.13,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 134,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 25.9886,
+            "y": 49.9865,
+            "yaw_rad": 1.5708,
+            "yaw_deg": 90.0
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0319,
+            "segment3_link2_distance_units": 0.0
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.0,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    },
+    {
+        "step_index": 135,
+        "step_duration_ms": 50,
+        "base_coordinates": {
+            "x": 26.0,
+            "y": 50.0,
+            "yaw_rad": 1.5708,
+            "yaw_deg": 90.0
+        },
+        "dc_motor_commands": {
+            "segment1_head_distance_units": 0.0176,
+            "segment3_link2_distance_units": 0.0176
+        },
+        "servo_yaw_commands": {
+            "q1_deg": 0.0,
+            "q2_deg": 0.0,
+            "q3_deg": 0.0
+        },
+        "servo_pitch_commands": {
+            "q1_pitch_deg": 0.0,
+            "q2_pitch_deg": 0.0,
+            "q3_pitch_deg": 0.0
+        }
+    }
+]

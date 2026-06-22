@@ -79,6 +79,8 @@ def main():
                         help='Joint 2 angle in degrees')
     parser.add_argument('--start_q3',      type=float, default=None,
                         help='Joint 3 angle in degrees')
+    parser.add_argument('--out',           type=str, default='robot_path_commands.json',
+                        help='Output JSON file path')
     args = parser.parse_args()
 
     # Detect replan mode: all six start-state args must be provided together
@@ -209,10 +211,10 @@ def main():
         commands.append(command)
         prev_state = state
 
-    with open("robot_path_commands.json", "w") as f:
+    with open(args.out, "w") as f:
         json.dump(commands, f, indent=4)
         
-    print("[EXPORT] Saved robot_path_commands.json for STM32 control.")
+    print(f"[EXPORT] Saved {args.out} for STM32 control.")
 
     # --- In replan mode: no animation, just exit after writing JSON ---
     if replan_mode:
