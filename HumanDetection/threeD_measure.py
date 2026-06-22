@@ -22,16 +22,20 @@ MARKER_SIZE = 0.21  # 3.5 cm
 aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_1000)
 aruco_params = aruco.DetectorParameters()
 
+# --- CHECKPOINT DICTIONARY ---
+CHECKPOINT_LOCATIONS = {
+    0: {"x": 17.0, "y": 20.0, "name": "Start/Entry"},
+    1: {"x": 25.0, "y": 35.0, "name": "Intersection"},
+    2: {"x": 20.0, "y": 50.0, "name": "Debris Climb Zone"},
+    3: {"x": 26.0, "y": 60.0, "name": "Goal/Docking Station"}
+}
+
 # --- CHECKPOINT UDP BROADCAST (for StateEstimator in the UART feeder) ---
 CHECKPOINT_UDP_IP   = "127.0.0.1"
 CHECKPOINT_UDP_PORT = 5005
 _udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-# --- CAMERA-TO-MAP TRANSFORM (PLACEHOLDER — calibrate on robot!) ---
-# These offsets and scale convert the camera-frame (x_m, z_m) into the
-# planner's map coordinates.  Adjust after mounting and measuring.
-MAP_ORIGIN_X = 17.0      # map x of the camera's optical center
-MAP_ORIGIN_Y = 10.0      # map y of the camera's optical center
+# --- CAMERA-TO-MAP TRANSFORM OFFSETS ---
 MAP_SCALE    = 10.0       # metres -> map units (1 m = 10 dm, 1 PU = 10 cm)
 CAMERA_YAW_OFFSET = 0.0   # radians: rotation between camera frame and map frame
 
@@ -95,31 +99,41 @@ while True:
                 distance_str = f"Mesafe (Z): {z_m*100:.1f} cm"
                 offset_str   = f"Yatay Kayma (X): {x_m*100:.1f} cm"
 
-                cv2.putText(frame, f"ID: {ids[i][0]}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                marker_id = ids[i][0]
+
+                cv2.putText(frame, f"ID: {marker_id}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
                 cv2.putText(frame, distance_str, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
                 cv2.putText(frame, offset_str, (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
 
                 # --- CHECKPOINT BROADCAST (Task 4) ---
-                # Convert camera-frame pose to map coordinates.
-                # PLACEHOLDER TRANSFORM — adjust after physical calibration.
-                map_x = MAP_ORIGIN_X + x_m * MAP_SCALE
-                map_y = MAP_ORIGIN_Y + z_m * MAP_SCALE
-                # Derive yaw from rotation vector
-                rmat, _ = cv2.Rodrigues(rvecs[i])
-                map_yaw = math.atan2(rmat[1, 0], rmat[0, 0]) + CAMERA_YAW_OFFSET
+                if marker_id in CHECKPOINT_LOCATIONS:
+                    loc = CHECKPOINT_LOCATIONS[marker_id]
+                    
+                    print(f"[CHECKPOINT] Detected {loc['name']} (ID: {marker_id})")
+                    
+                    # Calculate absolute robot position by anchoring to the known marker location
+                    robot_absolute_x = loc['x'] - (x_m * MAP_SCALE) 
+                    robot_absolute_y = loc['y'] - (z_m * MAP_SCALE) 
+                    
+                    # Derive yaw from rotation vector
+                    rmat, _ = cv2.Rodrigues(rvecs[i])
+                    map_yaw = math.atan2(rmat[1, 0], rmat[0, 0]) + CAMERA_YAW_OFFSET
 
-                checkpoint_msg = json.dumps({
-                    "x": round(float(map_x), 4),
-                    "y": round(float(map_y), 4),
-                    "yaw_rad": round(float(map_yaw), 6),
-                })
-                try:
-                    _udp_sock.sendto(
-                        checkpoint_msg.encode("utf-8"),
-                        (CHECKPOINT_UDP_IP, CHECKPOINT_UDP_PORT),
-                    )
-                except Exception:
-                    pass  # non-critical; feeder may not be running
+                    checkpoint_msg = json.dumps({
+                        "id": int(marker_id),
+                        "name": loc['name'],
+                        "x": round(float(robot_absolute_x), 4),
+                        "y": round(float(robot_absolute_y), 4),
+                        "yaw_rad": round(float(map_yaw), 6)
+                    })
+                    
+                    try:
+                        _udp_sock.sendto(
+                            checkpoint_msg.encode("utf-8"),
+                            (CHECKPOINT_UDP_IP, CHECKPOINT_UDP_PORT),
+                        )
+                    except Exception:
+                        pass
 
         cv2.imshow("Yilan Robot - Checkpoint Tespiti", frame)
 
