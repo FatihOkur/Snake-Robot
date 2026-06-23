@@ -21,7 +21,6 @@ class FastPiCamStream:
             '--width', '640', 
             '--height', '480', 
             '--framerate', '30', 
-            '--vflip', '--hflip', 
             '-o', '-'
         ]
         self.process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
