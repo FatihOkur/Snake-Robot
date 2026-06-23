@@ -15,7 +15,7 @@ SYNC_BYTE_2 = 0xBB
 
 # --- ENCODER -> UNITS CONVERSION (must match STM32 firmware) ---
 PULSES_PER_REV = 7392.0
-UNITS_TO_REV   = 1.0   # placeholder, identical to the STM32 #define
+UNITS_TO_REV   = 0.61224   # placeholder, identical to the STM32 #define
 
 # --- DOWNSAMPLING CONFIG ---
 # A step is only SENT when the servo angle has changed by at least this much
