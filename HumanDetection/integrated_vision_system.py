@@ -74,16 +74,17 @@ aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_1000)
 aruco_params = aruco.DetectorParameters()
 
 CHECKPOINT_LOCATIONS = {
-    0: {"x": 17.0, "y": 20.0, "name": "Start/Entry"},
-    1: {"x": 25.0, "y": 35.0, "name": "Intersection"},
-    2: {"x": 20.0, "y": 50.0, "name": "Debris Climb Zone"},
-    3: {"x": 26.0, "y": 60.0, "name": "Goal/Docking Station"}
+    0: {"x": 17.0, "y": 42.0, "name": "Start Straightaway (Extended)"},
+    1: {"x": 48.0, "y": 51.0, "name": "Right Intersection Wall (Extended)"},
+    2: {"x": 26.0, "y": 55.0, "name": "Mid-Corridor Alignment (Extended)"},
+    3: {"x": 26.0, "y": 75.0, "name": "Goal Wall (Extended)"}
 }
 
 CHECKPOINT_UDP_IP   = "127.0.0.1"
 CHECKPOINT_UDP_PORT = 5005
 _udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-MAP_SCALE    = 10.0       
+# Note: Lowered from 10.0 to 9.5 to compensate for the hypotenuse effect caused by the downward camera tilt.
+MAP_SCALE    = 9.5        
 CAMERA_YAW_OFFSET = 0.0   
 
 # ==========================================

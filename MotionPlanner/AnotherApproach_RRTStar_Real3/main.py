@@ -93,7 +93,7 @@ def main():
         matplotlib.use('Agg')
 
     SELECTED_MAP = "complex_map"
-    env = DebrisMap(45, 70, map_type=SELECTED_MAP)
+    env = DebrisMap(55, 85, map_type=SELECTED_MAP)
 
     if replan_mode:
         # --- REPLAN MODE: start from the robot's current physical state ---
