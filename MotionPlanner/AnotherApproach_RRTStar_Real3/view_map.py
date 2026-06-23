@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from environment import DebrisMap
 
-# 1. Initialize the new narrower/shorter map
+# 1. Initialize the EXTENDED map dimensions
 env = DebrisMap(width=55, height=85, map_type="complex_map")
 
 # 2. Setup the plot

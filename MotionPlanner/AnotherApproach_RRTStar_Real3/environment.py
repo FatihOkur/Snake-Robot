@@ -27,17 +27,19 @@ class DebrisMap:
     def create_complex_map(self):
         self.raw_grid[:, :] = 1
         
-        # Rooms and hallways (Intersection stops at 43 to leave a right debris wall)
-        self.raw_grid[3:37, 6:32] = 0      # Start room
-        self.raw_grid[23:52, 18:43] = 0    # Main intersection (Right wall preserved)
-        self.raw_grid[38:68, 13:42] = 0    # Goal room
+        # --- UPDATED BOUNDS FOR 55x85 EXTENDED MAP ---
         
-        # 3D-climbable debris piles
+        # Rooms and hallways
+        self.raw_grid[3:37, 6:32] = 0      # Start room (Unchanged)
+        self.raw_grid[23:52, 18:53] = 0    # Main intersection (Expanded right from 43 to 53 to allow wide turns)
+        self.raw_grid[38:83, 13:42] = 0    # Goal room (Expanded up from 68 to 83 to push the back wall back)
+        
+        # 3D-climbable debris piles (Unchanged)
         self.raw_grid[11:17, 23:27] = 1
         self.raw_grid[31:37, 19:27] = 1
         self.raw_grid[51:55, 16:21] = 1
         
-        # Smaller scattered chunks
+        # Smaller scattered chunks (Unchanged)
         self.raw_grid[27:28, 36:39] = 1
         self.raw_grid[43:45, 31:35] = 1
         self.raw_grid[21:22, 13:14] = 1
