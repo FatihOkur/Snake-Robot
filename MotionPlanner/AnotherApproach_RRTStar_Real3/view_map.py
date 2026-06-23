@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from environment import DebrisMap
 
 # 1. Initialize the new narrower/shorter map
-env = DebrisMap(width=45, height=70, map_type="complex_map")
+env = DebrisMap(width=55, height=85, map_type="complex_map")
 
 # 2. Setup the plot
 fig, axes = plt.subplots(1, 2, figsize=(10, 6))
