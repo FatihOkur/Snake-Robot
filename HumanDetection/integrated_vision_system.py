@@ -83,8 +83,8 @@ CHECKPOINT_LOCATIONS = {
 CHECKPOINT_UDP_IP   = "127.0.0.1"
 CHECKPOINT_UDP_PORT = 5005
 _udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-# Note: Lowered from 10.0 to 9.5 to compensate for the hypotenuse effect caused by the downward camera tilt.
-MAP_SCALE    = 9.5        
+# map scale is 10.
+MAP_SCALE    = 10.0        
 CAMERA_YAW_OFFSET = 0.0   
 
 # ==========================================
