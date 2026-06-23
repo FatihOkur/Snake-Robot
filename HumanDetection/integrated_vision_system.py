@@ -74,10 +74,17 @@ aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_1000)
 aruco_params = aruco.DetectorParameters()
 
 CHECKPOINT_LOCATIONS = {
-    0: {"x": 17.0, "y": 42.0, "name": "Start Straightaway (Extended)"},
-    1: {"x": 48.0, "y": 51.0, "name": "Right Intersection Wall (Extended)"},
-    2: {"x": 26.0, "y": 55.0, "name": "Mid-Corridor Alignment (Extended)"},
-    3: {"x": 26.0, "y": 75.0, "name": "Goal Wall (Extended)"}
+    # On the South-West corner of the large central debris pile
+    0: {"x": 19.0, "y": 31.0, "name": "Central Debris Edge"},
+    
+    # On the South face of the right-hand scattered rubble chunk
+    1: {"x": 36.0, "y": 27.0, "name": "Right Debris Chunk"},
+    
+    # On the South-East corner of the upper intersection chunk
+    2: {"x": 34.0, "y": 43.0, "name": "Upper Intersection Debris"},
+    
+    # Dead center on the back wall of the arena for the final docking approach
+    3: {"x": 26.0, "y": 83.0, "name": "Goal Wall Edge"}
 }
 
 CHECKPOINT_UDP_IP   = "127.0.0.1"
