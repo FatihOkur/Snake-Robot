@@ -154,6 +154,12 @@ while True:
             cv2.drawFrameAxes(display_frame, camera_matrix, dist_coeffs, rvecs[i], tvecs[i], 0.03)
 
             x_m, y_m, z_m = tvecs[i][0][0], tvecs[i][0][1], tvecs[i][0][2]
+            # ── Nose Correction ──────────────────────────────────────
+            # The camera lens sits 5 cm (0.05 m) behind the physical
+            # Nose on the Head segment.  Subtract that offset from the
+            # forward-depth axis so the reported position corresponds
+            # to the Nose rather than the lens.
+            z_m -= 0.05
             marker_id = ids[i][0]
 
             cv2.putText(display_frame, f"ID: {marker_id}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
