@@ -420,7 +420,7 @@ def main():
                                             step_index = 0
                                             print(f"[REPLAN] Loaded new trajectory: "
                                                   f"{total_steps} steps. Resuming.")
-                                            continue  # immediately serve new step 0
+                                            # Fall through to send the new step 0 immediately
                                         except Exception as reload_err:
                                             print(f"[REPLAN][ERROR] Failed to reload "
                                                   f"JSON: {reload_err}")
@@ -463,6 +463,7 @@ def main():
                         ser.flush()
                         step_index += 1
                         time.sleep(0.01)
+                        ser.reset_input_buffer()  # Drop stale REQs; wait for a fresh one
                     except Exception as e:
                         print(f"[HATA] Yazma esnasinda port koptu! Kurtarma dongusune girilecek: {e}")
 
