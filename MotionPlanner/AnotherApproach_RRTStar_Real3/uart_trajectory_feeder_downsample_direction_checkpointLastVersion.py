@@ -314,10 +314,12 @@ def main():
                                 # Current servo angles from the last sent command
                                 ik_q1 = float(prev_step["servo_yaw_commands"]["q1_deg"])
                                 ik_q2 = float(prev_step["servo_yaw_commands"]["q2_deg"])
+                                
+                                corrected_yaw = est_yaw + (math.pi / 2.0)
 
                                 # Walk the kinematic chain backwards: Nose → J3
-                                j3_x, j3_y, _ = calculate_j3_from_nose(
-                                    est_x, est_y, est_yaw, ik_q1, ik_q2)
+                                j3_x, j3_y, j3_yaw = calculate_j3_from_nose(
+                                    est_x, est_y, corrected_yaw, ik_q1, ik_q2)
 
                                 exp_x = prev_step["base_coordinates"]["x"]
                                 exp_y = prev_step["base_coordinates"]["y"]
@@ -341,9 +343,9 @@ def main():
 
                                     replan_cmd = [
                                         sys.executable, planner_path,
-                                        '--start_x',       str(est_x),
-                                        '--start_y',       str(est_y),
-                                        '--start_yaw_rad', str(est_yaw),
+                                        '--start_x',       str(round(j3_x, 4)),
+                                        '--start_y',       str(round(j3_y, 4)),
+                                        '--start_yaw_rad', str(round(j3_yaw, 6)),
                                         '--start_q1',      str(cur_q1),
                                         '--start_q2',      str(cur_q2),
                                         '--start_q3',      str(cur_q3),

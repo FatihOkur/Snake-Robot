@@ -8,6 +8,7 @@ import math
 import threading
 import time
 from ultralytics import YOLO
+import math
 
 # ==========================================
 # 1. THREADED CAMERA STREAM (THE LAG KILLER)
@@ -92,7 +93,7 @@ CHECKPOINT_UDP_PORT = 5005
 _udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # map scale is 10.
 MAP_SCALE    = 10.0        
-CAMERA_YAW_OFFSET = 0.0   
+CAMERA_YAW_OFFSET = math.pi / 2  
 
 # ==========================================
 # 3. HELPER FUNCTIONS
