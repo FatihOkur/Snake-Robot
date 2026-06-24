@@ -5,6 +5,13 @@ from scipy.spatial import KDTree
 import config
 from robot_model import SnakeRobotModel
 
+# --- Steering Tunables ---
+STEER_Q2_SHARE = 0.25      # fraction of the steering effort handled by q2 (support). 0 = old behavior.
+STEER_Q3_SHARE = 0.10      # small tail assist for body fluidity (q3 does NOT steer the base; see note).
+STEER_Q2_MAX_DEG = 12.0    # hard cap on q2's support contribution (deg), keep modest
+STEER_Q3_MAX_DEG = 6.0     # hard cap on q3's support contribution (deg)
+
+
 class Node:
     def __init__(self, state, parent=None, edge_cost=0.0):
         self.state = np.array(state, dtype=float)
@@ -131,11 +138,14 @@ class TailBaseRRT:
         max_curv = math.sin(math.radians(config.JOINT_LIMIT)) / config.L_HEAD
         curvature = max(-max_curv, min(max_curv, curvature))
 
-        # Compute ideal q1 steering angle from the desired curvature
+        # Compute ideal steering angle from the desired curvature
         L = config.L_HEAD
-        sin_q1_ideal = (curvature * L) / direction
-        sin_q1_ideal = max(-0.999, min(0.999, sin_q1_ideal))
-        q1_ideal_deg = math.degrees(math.asin(sin_q1_ideal))
+        total_steer_deg = math.degrees(math.asin(max(-0.999, min(0.999, (curvature * L) / direction))))
+
+        # Split steering effort: q1 is primary, q2/q3 are support
+        q1_ideal_deg = total_steer_deg * (1.0 - STEER_Q2_SHARE)
+        q2_support_deg = max(-STEER_Q2_MAX_DEG, min(STEER_Q2_MAX_DEG, total_steer_deg * STEER_Q2_SHARE))
+        q3_support_deg = max(-STEER_Q3_MAX_DEG, min(STEER_Q3_MAX_DEG, total_steer_deg * STEER_Q3_SHARE))
 
         new_state = from_state.copy()
 
@@ -149,15 +159,17 @@ class TailBaseRRT:
             scale_q1 = min(1.0, 10.0 / abs(q1_diff)) 
             new_state[3] += q1_diff * scale_q1
 
-        # q2 (index 4): Support joint — blend toward goal target
-        q2_target = (1.0 - GOAL_JOINT_BLEND) * to_state[4] + GOAL_JOINT_BLEND * self.goal_state[4]
+        # q2 (index 4): Support joint — blend of support steering and goal target
+        q2_goal_term = (1.0 - GOAL_JOINT_BLEND) * to_state[4] + GOAL_JOINT_BLEND * self.goal_state[4]
+        q2_target = q2_support_deg + GOAL_JOINT_BLEND * (q2_goal_term - from_state[4])
         q2_diff = q2_target - from_state[4]
         if abs(q2_diff) > 1e-6:
             scale_q2 = min(1.0, SAFE_JOINT_STEP / abs(q2_diff))
             new_state[4] += q2_diff * scale_q2
 
-        # q3 (index 5): Support joint — blend toward goal target
-        q3_target = (1.0 - GOAL_JOINT_BLEND) * to_state[5] + GOAL_JOINT_BLEND * self.goal_state[5]
+        # q3 (index 5): Support joint — blend of support steering and goal target
+        q3_goal_term = (1.0 - GOAL_JOINT_BLEND) * to_state[5] + GOAL_JOINT_BLEND * self.goal_state[5]
+        q3_target = q3_support_deg + GOAL_JOINT_BLEND * (q3_goal_term - from_state[5])
         q3_diff = q3_target - from_state[5]
         if abs(q3_diff) > 1e-6:
             scale_q3 = min(1.0, SAFE_JOINT_STEP / abs(q3_diff))
@@ -248,11 +260,9 @@ class TailBaseRRT:
             curvature = max(-max_curv, min(max_curv, curvature))
             
             L = config.L_HEAD
-            sin_q1 = (curvature * L) / direction
-            sin_q1 = max(-0.999, min(0.999, sin_q1))
-            pure_pursuit_angle = math.degrees(math.asin(sin_q1))
+            total_steer_deg = math.degrees(math.asin(max(-0.999, min(0.999, (curvature * L) / direction))))
             
-            # ADAPTIVE BLENDING for q1 (primary steering joint)
+            # ADAPTIVE BLENDING for primary steering (q1)
             # When very close, add a gentle yaw-correction so the bicycle model
             # can steer even when lateral offset is nearly zero.
             if dist < 0.5:
@@ -260,9 +270,11 @@ class TailBaseRRT:
                 yaw_error_signed = self.normalize_angle(self.goal_state[2] - state[2])
                 yaw_correction_deg = math.degrees(yaw_error_signed) * 0.5 / direction
                 yaw_correction_deg = max(-config.JOINT_LIMIT, min(config.JOINT_LIMIT, yaw_correction_deg))
-                q1_ideal_deg = pos_weight * pure_pursuit_angle + (1.0 - pos_weight) * yaw_correction_deg
-            else:
-                q1_ideal_deg = pure_pursuit_angle
+                total_steer_deg = pos_weight * total_steer_deg + (1.0 - pos_weight) * yaw_correction_deg
+                
+            q1_ideal_deg = total_steer_deg * (1.0 - STEER_Q2_SHARE)
+            q2_support_deg = max(-STEER_Q2_MAX_DEG, min(STEER_Q2_MAX_DEG, total_steer_deg * STEER_Q2_SHARE))
+            q3_support_deg = max(-STEER_Q3_MAX_DEG, min(STEER_Q3_MAX_DEG, total_steer_deg * STEER_Q3_SHARE))
                 
             # RATE-LIMITED BASE TRANSLATION
             # Finer steps for docking precision — shorter wheelbase means
@@ -279,13 +291,15 @@ class TailBaseRRT:
             q1_step = np.clip(q1_error, -SAFE_JOINT_STEP, SAFE_JOINT_STEP)
             new_state[3] += q1_step
 
-            # q2 (index 4): Support joint — snap toward goal
-            q2_error = self.goal_state[4] - state[4]
+            # q2 (index 4): Support joint — snap toward goal + support turn
+            q2_target = q2_support_deg + 0.3 * (self.goal_state[4] - state[4])
+            q2_error = q2_target - state[4]
             q2_step = np.clip(q2_error, -SAFE_JOINT_STEP, SAFE_JOINT_STEP)
             new_state[4] += q2_step
 
-            # q3 (index 5): Support joint — snap toward goal
-            q3_error = self.goal_state[5] - state[5]
+            # q3 (index 5): Support joint — snap toward goal + support turn
+            q3_target = q3_support_deg + 0.3 * (self.goal_state[5] - state[5])
+            q3_error = q3_target - state[5]
             q3_step = np.clip(q3_error, -SAFE_JOINT_STEP, SAFE_JOINT_STEP)
             new_state[5] += q3_step
                 
