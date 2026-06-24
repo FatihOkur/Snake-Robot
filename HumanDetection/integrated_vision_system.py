@@ -69,13 +69,13 @@ except:
     print("[ERROR] camera_calibration.json not found! Exiting.")
     exit()
 
-MARKER_SIZE = 0.189  # 3.5 cm
+MARKER_SIZE = 0.189  
 aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_1000)
 aruco_params = aruco.DetectorParameters()
 
 CHECKPOINT_LOCATIONS = {
-    # On the South-West corner of the large central debris pile
-    0: {"x": 19.0, "y": 31.0, "name": "Central Debris Edge"},
+    # Changed the x to be directly to the initial state of the snake
+    0: {"x": 17.0, "y": 31.0, "name": "Central Debris Edge"},
     
     # On the South face of the right-hand scattered rubble chunk
     1: {"x": 36.0, "y": 27.0, "name": "Right Debris Chunk"},
