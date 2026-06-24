@@ -463,7 +463,6 @@ def main():
                         ser.flush()
                         step_index += 1
                         time.sleep(0.01)
-                        ser.reset_input_buffer()
                     except Exception as e:
                         print(f"[HATA] Yazma esnasinda port koptu! Kurtarma dongusune girilecek: {e}")
 
