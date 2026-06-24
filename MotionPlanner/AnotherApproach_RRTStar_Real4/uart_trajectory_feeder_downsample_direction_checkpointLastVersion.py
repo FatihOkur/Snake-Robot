@@ -178,14 +178,15 @@ def main():
 
     # 1.5 DOWNSAMPLE / MERGE PASS
     trajectory = []
+    acc_duration = 0
     acc_head = 0.0
     acc_link2 = 0.0
     last_sent_yaw = None
     n = len(raw_trajectory)
 
-    def emit(idx_cmd, ah, al, q):
+    def emit(idx_cmd, ad, ah, al, q):
         entry = {
-            "step_duration_ms": int(idx_cmd["step_duration_ms"]),
+            "step_duration_ms": ad,
             "dc_motor_commands": {
                 "segment1_head_distance_units": ah,
                 "segment3_link2_distance_units": al,
@@ -211,11 +212,13 @@ def main():
         link2_reversal = (acc_link2 * dl < -1e-12)
         if (head_reversal or link2_reversal) and prev_cmd is not None:
             pq = get_yaw(prev_cmd)
-            emit(prev_cmd, acc_head, acc_link2, pq)
+            emit(prev_cmd, acc_duration, acc_head, acc_link2, pq)
             last_sent_yaw = pq
+            acc_duration = 0
             acc_head = 0.0
             acc_link2 = 0.0
 
+        acc_duration += int(cmd["step_duration_ms"])
         acc_head += dh
         acc_link2 += dl
 
@@ -237,8 +240,9 @@ def main():
                       abs(acc_link2) >= MAX_DC_UNITS_PER_STEP)
 
         if angle_moved or dc_cap_hit or is_last:
-            emit(cmd, acc_head, acc_link2, (q1, q2, q3))
+            emit(cmd, acc_duration, acc_head, acc_link2, (q1, q2, q3))
             last_sent_yaw = (q1, q2, q3)
+            acc_duration = 0
             acc_head = 0.0
             acc_link2 = 0.0
 
@@ -378,6 +382,7 @@ def main():
                                                 new_raw = json.load(jf)
                                             # Re-run the downsample pass
                                             trajectory.clear()
+                                            acc_duration = 0
                                             acc_head = 0.0
                                             acc_link2 = 0.0
                                             last_sent_yaw = None
@@ -389,10 +394,13 @@ def main():
                                                 lr = (acc_link2 * dl < -1e-12)
                                                 if (hr or lr) and prev_cmd is not None:
                                                     pq = get_yaw(prev_cmd)
-                                                    emit(prev_cmd, acc_head, acc_link2, pq)
+                                                    emit(prev_cmd, acc_duration, acc_head, acc_link2, pq)
                                                     last_sent_yaw = pq
+                                                    acc_duration = 0
                                                     acc_head = 0.0
                                                     acc_link2 = 0.0
+                                                
+                                                acc_duration += int(ccmd["step_duration_ms"])
                                                 acc_head += dh
                                                 acc_link2 += dl
                                                 cq1, cq2, cq3 = get_yaw(ccmd)
@@ -410,8 +418,9 @@ def main():
                                                     abs(acc_link2) >= MAX_DC_UNITS_PER_STEP
                                                 )
                                                 if ang_moved or dc_cap or is_last:
-                                                    emit(ccmd, acc_head, acc_link2, (cq1, cq2, cq3))
+                                                    emit(ccmd, acc_duration, acc_head, acc_link2, (cq1, cq2, cq3))
                                                     last_sent_yaw = (cq1, cq2, cq3)
+                                                    acc_duration = 0
                                                     acc_head = 0.0
                                                     acc_link2 = 0.0
                                                 prev_cmd = ccmd

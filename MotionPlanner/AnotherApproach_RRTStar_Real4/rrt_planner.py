@@ -5,11 +5,11 @@ from scipy.spatial import KDTree
 import config
 from robot_model import SnakeRobotModel
 
-# --- Steering Tunables ---
-STEER_Q2_SHARE = 0.25      # fraction of the steering effort handled by q2 (support). 0 = old behavior.
-STEER_Q3_SHARE = 0.10      # small tail assist for body fluidity (q3 does NOT steer the base; see note).
-STEER_Q2_MAX_DEG = 12.0    # hard cap on q2's support contribution (deg), keep modest
-STEER_Q3_MAX_DEG = 6.0     # hard cap on q3's support contribution (deg)
+# --- Steering Tunables (Balanced Front-Bias) ---
+STEER_Q2_SHARE = 0.15      # Q1 does 85% of the work, Q2 helps with 15% to bend the body
+STEER_Q3_SHARE = 0.10      # 10% tail assist to keep the tail fluid and prevent dragging
+STEER_Q2_MAX_DEG = 12.0    # Capped so it supports the turn but doesn't steal control from Q1
+STEER_Q3_MAX_DEG = 8.0     # Gives the tail enough room to swing clear of obstacles
 
 
 class Node:
@@ -150,7 +150,7 @@ class TailBaseRRT:
         new_state = from_state.copy()
 
         # 2. Full Body Joint Stepping
-        SAFE_JOINT_STEP = 5.0 # Max degrees a joint can swing per step
+        SAFE_JOINT_STEP = 10.0 # Max degrees a joint can swing per step
         GOAL_JOINT_BLEND = 0.3
 
         # q1 (index 3): Primary steering — rate-limited toward ideal trajectory angle
@@ -284,7 +284,7 @@ class TailBaseRRT:
             new_state = state.copy()
             
             # RATE-LIMITED JOINT CONTROL (No teleporting!)
-            SAFE_JOINT_STEP = 5.0 # Max degrees a servo can swing per step
+            SAFE_JOINT_STEP = 10.0 # Max degrees a servo can swing per step
             
             # q1 (index 3): Primary steering — steer toward the ideal docking trajectory
             q1_error = q1_ideal_deg - state[3]
