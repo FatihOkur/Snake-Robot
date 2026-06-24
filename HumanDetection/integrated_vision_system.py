@@ -69,7 +69,7 @@ except:
     print("[ERROR] camera_calibration.json not found! Exiting.")
     exit()
 
-MARKER_SIZE = 0.21  # 3.5 cm
+MARKER_SIZE = 0.189  # 3.5 cm
 aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_1000)
 aruco_params = aruco.DetectorParameters()
 
