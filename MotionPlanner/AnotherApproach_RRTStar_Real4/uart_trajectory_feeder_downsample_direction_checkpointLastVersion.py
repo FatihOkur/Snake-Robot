@@ -13,7 +13,7 @@ import socket
 # ──────────────────────────────────────────────────────────────────
 # CONFIGURATION
 # ──────────────────────────────────────────────────────────────────
-JSON_FILE = 'robot_path_commands.json'
+JSON_FILE = 'robot_path_commands2.json'
 REPLAN_OUTPUT_FILE = 'replanned_path.json'
 UART_PORT = '/dev/ttyAMA0'
 BAUD_RATE = 115200
