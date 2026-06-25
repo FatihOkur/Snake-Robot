@@ -211,9 +211,16 @@ def main():
         head_reversal  = (acc_head  * dh < -1e-12)
         link2_reversal = (acc_link2 * dl < -1e-12)
         if (head_reversal or link2_reversal) and prev_cmd is not None:
+            # 1. Flush the accumulated distance in the old direction
             pq = get_yaw(prev_cmd)
             emit(prev_cmd, acc_duration, acc_head, acc_link2, pq)
-            last_sent_yaw = pq
+            
+            # 2. Inject a "Stop & Steer" pivot step
+            new_yaw = get_yaw(cmd)
+            emit(cmd, 500, 0.0, 0.0, new_yaw)
+            
+            # 3. Prepare for the new direction
+            last_sent_yaw = new_yaw
             acc_duration = 0
             acc_head = 0.0
             acc_link2 = 0.0
@@ -393,9 +400,16 @@ def main():
                                                 hr = (acc_head * dh < -1e-12)
                                                 lr = (acc_link2 * dl < -1e-12)
                                                 if (hr or lr) and prev_cmd is not None:
+                                                    # 1. Flush old direction
                                                     pq = get_yaw(prev_cmd)
                                                     emit(prev_cmd, acc_duration, acc_head, acc_link2, pq)
-                                                    last_sent_yaw = pq
+                                                    
+                                                    # 2. Inject "Stop & Steer" pivot step
+                                                    new_yaw = get_yaw(ccmd)
+                                                    emit(ccmd, 500, 0.0, 0.0, new_yaw)
+                                                    
+                                                    # 3. Prepare for new direction
+                                                    last_sent_yaw = new_yaw
                                                     acc_duration = 0
                                                     acc_head = 0.0
                                                     acc_link2 = 0.0
