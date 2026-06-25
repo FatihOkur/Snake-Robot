@@ -44,14 +44,17 @@ def interpolate_arc_path(path_data, env, steps_per_node=10):
                 # Pure Rotation (Turn in Place)
                 interp_state = s1.copy()
                 interp_state[2] = s1[2] + t * dth
-                # Joints might change too
-                interp_state[3:] = s1[3:] + t * (s2[3:] - s1[3:])
+                # Joints MUST NOT be interpolated. Take target node's final values immediately.
+                interp_state[3:] = s2[3:]
             else:
                 # Drive (Linear/Arc approx)
-                # Since we are essentially connecting valid states, linear interp of state
+                # Since we are essentially connecting valid states, linear interp of position
                 # combined with angle interp creates the visual arc.
-                interp_state = s1 + t * (s2 - s1)
+                interp_state = s1.copy()
+                interp_state[:2] = s1[:2] + t * (s2[:2] - s1[:2])
                 interp_state[2] = s1[2] + t * dth
+                # Joints MUST NOT be interpolated. Take target node's final values immediately.
+                interp_state[3:] = s2[3:]
             
             # 3. Collision check: only show frames that are physically valid
             if SnakeRobotModel.is_valid_state(interp_state, env):
