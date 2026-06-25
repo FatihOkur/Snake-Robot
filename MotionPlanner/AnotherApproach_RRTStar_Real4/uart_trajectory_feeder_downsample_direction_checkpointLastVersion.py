@@ -29,7 +29,7 @@ SERVO_DEADBAND_DEG = 2.0
 MAX_DC_UNITS_PER_STEP = 2.0
 
 # --- DYNAMIC REPLANNING ---
-REPLAN_THRESHOLD = 5.0          # map units of position error before replan
+REPLAN_THRESHOLD = 10.0          # map units of position error before replan
 PLANNER_SCRIPT   = 'main.py'   # RRT* planner entry point
 
 
