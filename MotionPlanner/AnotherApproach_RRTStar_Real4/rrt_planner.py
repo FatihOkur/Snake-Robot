@@ -144,13 +144,22 @@ class TailBaseRRT:
 
         # Split steering effort: q1 is primary, q2/q3 are support
         q1_ideal_deg = total_steer_deg * (1.0 - STEER_Q2_SHARE)
+
+        MIN_Q1_ANGLE = 15.0
+        # Deadband of 1.5 degrees to allow perfectly straight driving (0 deg) without snapping to 15.
+        if abs(q1_ideal_deg) > 1.5:  
+            if q1_ideal_deg > 0 and q1_ideal_deg < MIN_Q1_ANGLE:
+                q1_ideal_deg = MIN_Q1_ANGLE
+            elif q1_ideal_deg < 0 and q1_ideal_deg > -MIN_Q1_ANGLE:
+                q1_ideal_deg = -MIN_Q1_ANGLE
+
         q2_support_deg = max(-STEER_Q2_MAX_DEG, min(STEER_Q2_MAX_DEG, total_steer_deg * STEER_Q2_SHARE))
         q3_support_deg = max(-STEER_Q3_MAX_DEG, min(STEER_Q3_MAX_DEG, total_steer_deg * STEER_Q3_SHARE))
 
         new_state = from_state.copy()
 
         # 2. Full Body Joint Stepping
-        SAFE_JOINT_STEP = 10.0 # Max degrees a joint can swing per step
+        SAFE_JOINT_STEP = 20.0 # Max degrees a joint can swing per step
         GOAL_JOINT_BLEND = 0.3
 
         # q1 (index 3): Primary steering — rate-limited toward ideal trajectory angle
@@ -273,6 +282,15 @@ class TailBaseRRT:
                 total_steer_deg = pos_weight * total_steer_deg + (1.0 - pos_weight) * yaw_correction_deg
                 
             q1_ideal_deg = total_steer_deg * (1.0 - STEER_Q2_SHARE)
+
+            MIN_Q1_ANGLE = 15.0
+            # Deadband of 1.5 degrees to allow perfectly straight driving (0 deg) without snapping to 15.
+            if abs(q1_ideal_deg) > 1.5:  
+                if q1_ideal_deg > 0 and q1_ideal_deg < MIN_Q1_ANGLE:
+                    q1_ideal_deg = MIN_Q1_ANGLE
+                elif q1_ideal_deg < 0 and q1_ideal_deg > -MIN_Q1_ANGLE:
+                    q1_ideal_deg = -MIN_Q1_ANGLE
+
             q2_support_deg = max(-STEER_Q2_MAX_DEG, min(STEER_Q2_MAX_DEG, total_steer_deg * STEER_Q2_SHARE))
             q3_support_deg = max(-STEER_Q3_MAX_DEG, min(STEER_Q3_MAX_DEG, total_steer_deg * STEER_Q3_SHARE))
                 
@@ -284,7 +302,7 @@ class TailBaseRRT:
             new_state = state.copy()
             
             # RATE-LIMITED JOINT CONTROL (No teleporting!)
-            SAFE_JOINT_STEP = 10.0 # Max degrees a servo can swing per step
+            SAFE_JOINT_STEP = 20.0 # Max degrees a servo can swing per step
             
             # q1 (index 3): Primary steering — steer toward the ideal docking trajectory
             q1_error = q1_ideal_deg - state[3]
